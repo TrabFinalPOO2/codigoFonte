@@ -8,8 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -22,7 +22,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"pins", "boards", "following", "followers", "favoritePins", "savedPins"}) // Excluímos coleções do ToString
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "app_user") // evita conflito com 'user' palavra reservada em alguns bancos

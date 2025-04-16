@@ -21,7 +21,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "boards") // Excluímos boards do ToString para evitar recursão
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pin {
@@ -45,7 +45,7 @@ public class Pin {
     private User creator;
     
     @ManyToMany
-    @ToString.Exclude // Excluímos esta coleção do ToString gerado
+    @ToString.Exclude // Excluímos esta coleção do ToString para evitar recursão
     private Set<Board> boards = new HashSet<>();
     
     private boolean featured;
