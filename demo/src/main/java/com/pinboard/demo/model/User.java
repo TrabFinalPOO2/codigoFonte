@@ -76,6 +76,15 @@ public class User {
     @ToString.Exclude
     private Set<Pin> savedPins = new HashSet<>();
     
+    @ManyToMany
+    @JoinTable(
+        name = "user_liked_pins",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "pin_id")
+    )
+    @ToString.Exclude
+    private Set<Pin> likedPins = new HashSet<>();
+    
     // Método para seguir outro usuário
     public void follow(User user) {
         following.add(user);
@@ -116,6 +125,21 @@ public class User {
     // Método para verificar se um pin está salvo
     public boolean hasSaved(Pin pin) {
         return savedPins.contains(pin);
+    }
+    
+    // Método para curtir um pin
+    public void likePin(Pin pin) {
+        likedPins.add(pin);
+    }
+    
+    // Método para descurtir um pin
+    public void unlikePin(Pin pin) {
+        likedPins.remove(pin);
+    }
+    
+    // Método para verificar se um pin foi curtido pelo usuário
+    public boolean hasLiked(Pin pin) {
+        return likedPins.contains(pin);
     }
     
     // Override do método equals para evitar recursão infinita

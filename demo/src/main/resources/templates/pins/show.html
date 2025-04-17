@@ -65,7 +65,16 @@
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 mt-3">
                                     <!-- Botão de curtir -->
                                     <div class="col d-grid mb-2">
-                                        <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-danger">
+                                        <a th:if="${session.currentUser != null}" 
+                                           th:href="@{/pins/{id}/like(id=${pin.id})}" 
+                                           class="btn" 
+                                           th:classappend="${isLiked} ? 'btn-danger' : 'btn-outline-danger'">
+                                            <i class="fa fa-heart"></i> 
+                                            <span th:text="${isLiked} ? 'Curtido' : 'Curtir'">Curtir</span>
+                                        </a>
+                                        <a th:unless="${session.currentUser != null}" 
+                                           th:href="@{/auth/login}" 
+                                           class="btn btn-outline-danger">
                                             <i class="fa fa-heart"></i> Curtir
                                         </a>
                                     </div>

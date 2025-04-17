@@ -80,14 +80,26 @@ public class PinService {
         }
     }
     
-    public void likePin(Long id) {
+    public void likePin(Long id, User user) {
         Pin pin = pinRepository.findById(id).orElse(null);
-        if (pin != null) {
-            pin.setLikes(pin.getLikes() + 1);
+        if (pin != null && user != null) {
+            // Verifica se o usuário já curtiu este pin
+            if (user.hasLiked(pin)) {
+                // Usuário já curtiu este pin, remove o like
+                user.unlikePin(pin);
+                if (pin.getLikes() > 0) {
+                    pin.setLikes(pin.getLikes() - 1);
+                }
+                // Notifica os observadores sobre a remoção do like
+                notificationService.notifyObservers("Pin teve um like removido", pin.getId());
+            } else {
+                // Usuário ainda não curtiu este pin, adiciona o like
+                user.likePin(pin);
+                pin.setLikes(pin.getLikes() + 1);
+                // Notifica os observadores sobre o novo like
+                notificationService.notifyObservers("Pin recebeu um like", pin.getId());
+            }
             pinRepository.save(pin);
-            
-            // Notifica os observadores sobre o like no pin
-            notificationService.notifyObservers("Pin recebeu um like", pin.getId());
         }
     }
     

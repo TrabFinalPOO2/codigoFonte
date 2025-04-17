@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -67,6 +68,7 @@ public class PinController {
     }
     
     @GetMapping("/{id}")
+    @Transactional
     public String getPin(@PathVariable Long id, Model model, HttpSession session) {
         Pin pin = pinService.getPin(id);
         if (pin == null) {
@@ -77,15 +79,23 @@ public class PinController {
         model.addAttribute("pinHtml", pinService.renderPin(pin));
         model.addAttribute("appName", configManager.getAppName());
         
-        // Verificar se o usuário logado favoritou/salvou este pin
+        // Verificar se o usuário logado favoritou/salvou/curtiu este pin
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser != null) {
+            // Recarregar o usuário para ter acesso às coleções lazy em uma transação ativa
+            currentUser = userService.refreshUser(currentUser.getId());
+            
             // Usar os métodos transacionais do service em vez de chamar diretamente os métodos do usuário
             boolean isFavorited = userService.hasUserFavoritedPin(currentUser.getId(), id);
             boolean isSaved = userService.hasUserSavedPin(currentUser.getId(), id);
+            boolean isLiked = userService.hasUserLikedPin(currentUser.getId(), id);
             
             model.addAttribute("isFavorited", isFavorited);
             model.addAttribute("isSaved", isSaved);
+            model.addAttribute("isLiked", isLiked);
+            
+            // Atualizar o usuário na sessão com a versão mais recente
+            session.setAttribute("currentUser", currentUser);
         }
         
         return "pins/show";
@@ -186,8 +196,23 @@ public class PinController {
     }
     
     @GetMapping("/{id}/like")
-    public String likePin(@PathVariable Long id) {
-        pinService.likePin(id);
+    @Transactional
+    public String likePin(@PathVariable Long id, HttpSession session) {
+        // Verificar se o usuário está logado
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            return "redirect:/auth/login";
+        }
+        
+        // Recarregar o usuário para ter acesso às coleções lazy
+        currentUser = userService.refreshUser(currentUser.getId());
+        
+        // Atualiza o método para passar o usuário atual
+        pinService.likePin(id, currentUser);
+        
+        // Atualizar o usuário na sessão para que as alterações de like sejam refletidas
+        session.setAttribute("currentUser", currentUser);
+        
         return "redirect:/pins/" + id;
     }
     
@@ -203,11 +228,15 @@ public class PinController {
     // Favoritar um pin (AJAX)
     @PostMapping("/{id}/favorite")
     @ResponseBody
+    @Transactional
     public ResponseEntity<String> favoritePin(@PathVariable Long id, HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser == null) {
             return ResponseEntity.status(401).body("Usuário não autenticado");
         }
+        
+        // Recarregar o usuário para ter acesso às coleções lazy
+        currentUser = userService.refreshUser(currentUser.getId());
         
         Pin pin = pinService.getPin(id);
         if (pin == null) {
@@ -218,9 +247,13 @@ public class PinController {
         
         if (isFavorited) {
             userService.unfavoritePin(currentUser.getId(), id);
+            // Atualizar o usuário na sessão
+            session.setAttribute("currentUser", currentUser);
             return ResponseEntity.ok("Pin removido dos favoritos");
         } else {
             userService.favoritePin(currentUser.getId(), id);
+            // Atualizar o usuário na sessão
+            session.setAttribute("currentUser", currentUser);
             return ResponseEntity.ok("Pin adicionado aos favoritos");
         }
     }
@@ -228,11 +261,15 @@ public class PinController {
     // Salvar um pin (AJAX)
     @PostMapping("/{id}/save")
     @ResponseBody
+    @Transactional
     public ResponseEntity<String> savePin(@PathVariable Long id, HttpSession session) {
         User currentUser = (User) session.getAttribute("currentUser");
         if (currentUser == null) {
             return ResponseEntity.status(401).body("Usuário não autenticado");
         }
+        
+        // Recarregar o usuário para ter acesso às coleções lazy
+        currentUser = userService.refreshUser(currentUser.getId());
         
         Pin pin = pinService.getPin(id);
         if (pin == null) {
@@ -243,9 +280,13 @@ public class PinController {
         
         if (isSaved) {
             userService.unsavePin(currentUser.getId(), id);
+            // Atualizar o usuário na sessão
+            session.setAttribute("currentUser", currentUser);
             return ResponseEntity.ok("Pin removido dos salvos");
         } else {
             userService.savePin(currentUser.getId(), id);
+            // Atualizar o usuário na sessão
+            session.setAttribute("currentUser", currentUser);
             return ResponseEntity.ok("Pin salvo com sucesso");
         }
     }

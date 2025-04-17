@@ -115,4 +115,40 @@ public class UserService {
         
         return user.getSavedPins().contains(pin);
     }
+    
+    @Transactional
+    public void likePin(Long userId, Long pinId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Pin pin = pinRepository.findById(pinId).orElseThrow();
+        
+        user.likePin(pin);
+        userRepository.save(user);
+    }
+    
+    @Transactional
+    public void unlikePin(Long userId, Long pinId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        Pin pin = pinRepository.findById(pinId).orElseThrow();
+        
+        user.unlikePin(pin);
+        userRepository.save(user);
+    }
+    
+    @Transactional
+    public Set<Pin> getLikedPins(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return user.getLikedPins();
+    }
+    
+    @Transactional
+    public boolean hasUserLikedPin(Long userId, Long pinId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Pin pin = pinRepository.findById(pinId).orElse(null);
+        
+        if (user == null || pin == null) {
+            return false;
+        }
+        
+        return user.getLikedPins().contains(pin);
+    }
 }
