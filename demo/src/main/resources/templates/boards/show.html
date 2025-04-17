@@ -33,13 +33,15 @@
                 </span>
               </div>
               <div class="d-flex">
-                <a th:href="@{/boards/{id}/edit(id=${board.id})}" class="btn btn-sm btn-outline-secondary me-2">
-                  <i class="fa fa-edit"></i> Editar
-                </a>
-                <a th:href="@{/boards/{id}/delete(id=${board.id})}" class="btn btn-sm btn-outline-danger"
-                  onclick="return confirm('Tem certeza que deseja excluir este board?')">
-                  <i class="fa fa-trash"></i> Excluir
-                </a>
+                <div th:if="${isOwner}" class="board-actions">
+                  <a th:href="@{/boards/{id}/edit(id=${board.id})}" class="btn btn-sm btn-outline-secondary me-2">
+                    <i class="fa fa-edit"></i> Editar
+                  </a>
+                  <a th:href="@{/boards/{id}/delete(id=${board.id})}" class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('Tem certeza que deseja excluir este board? Esta ação não pode ser desfeita.')">
+                    <i class="fa fa-trash"></i> Excluir
+                  </a>
+                </div>
               </div>
             </div>
           </div>

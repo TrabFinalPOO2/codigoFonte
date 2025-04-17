@@ -3,21 +3,31 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Criar novo Board</title>
+  <title>Editar Board</title>
 </head>
 
 <body>
   <div th:replace="~{layouts/main :: body(content=~{::section})}">
     <section>
       <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/boards}">Boards</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.name}">Board</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+          </ol>
+        </nav>
+
         <div class="row justify-content-center">
           <div class="col-md-8">
             <div class="card shadow">
               <div class="card-header bg-white">
-                <h2 class="card-title h4 mb-0">Criar novo Board</h2>
+                <h2 class="card-title h4 mb-0">Editar Board</h2>
               </div>
               <div class="card-body">
-                <form th:action="@{/boards}" th:object="${board}" method="post">
+                <form th:action="@{/boards/{id}(id=${board.id})}" th:object="${board}" method="post">
+                  <input type="hidden" th:field="*{id}">
                   <div class="mb-3">
                     <label for="name" class="form-label">Nome</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}" required>
@@ -28,31 +38,25 @@
                   </div>
                   <div class="mb-3">
                     <label for="coverImageUrl" class="form-label">URL da Imagem de Capa</label>
-                    <input type="url" class="form-control" id="coverImageUrl" th:field="*{coverImageUrl}" required>
+                    <input type="url" class="form-control" id="coverImageUrl" th:field="*{coverImageUrl}">
                     <div class="form-text">Cole a URL de uma imagem da web para a capa do board.</div>
                   </div>
                   <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="private" name="private">
+                    <input type="checkbox" class="form-check-input" id="private" name="private" th:checked="*{isPrivate}">
                     <label class="form-check-label" for="private">Board privado</label>
                   </div>
                   <div class="d-flex justify-content-between">
-                    <a th:href="@{/boards}" class="btn btn-outline-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-danger">Criar Board</button>
+                    <a th:href="@{/boards/{id}(id=${board.id})}" class="btn btn-outline-secondary">Cancelar</a>
+                    <div>
+                      <a th:href="@{/boards/{id}/delete(id=${board.id})}" 
+                         class="btn btn-outline-danger me-2"
+                         onclick="return confirm('Tem certeza que deseja excluir este board? Esta ação não pode ser desfeita.')">
+                        Excluir
+                      </a>
+                      <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
                   </div>
                 </form>
-              </div>
-            </div>
-            <div class="card mt-4">
-              <div class="card-header bg-white">
-                <h3 class="card-title h5 mb-0">Dicas para organizar boards</h3>
-              </div>
-              <div class="card-body">
-                <ul>
-                  <li>Use nomes claros e descritivos</li>
-                  <li>Agrupe pins com temas semelhantes</li>
-                  <li>Escolha uma imagem de capa atraente e representativa</li>
-                  <li>Mantenha seus boards organizados para facilitar a navegação</li>
-                </ul>
               </div>
             </div>
           </div>
@@ -64,12 +68,12 @@
               <div class="card-body">
                 <div class="board-preview">
                   <div class="card board-card">
-                    <img id="preview-cover" src="https://via.placeholder.com/400x200?text=Imagem+de+Capa"
+                    <img id="preview-cover" th:src="${board.coverImageUrl != null ? board.coverImageUrl : 'https://via.placeholder.com/400x200?text=Imagem+de+Capa'}"
                       class="card-img-top" alt="Prévia">
                     <div class="card-body">
-                      <h5 class="card-title" id="preview-name">Nome do Board</h5>
-                      <p class="card-text" id="preview-description">Descrição do board...</p>
-                      <span id="preview-private" class="badge bg-secondary d-none">Privado</span>
+                      <h5 class="card-title" id="preview-name" th:text="${board.name}">Nome do Board</h5>
+                      <p class="card-text" id="preview-description" th:text="${board.description}">Descrição do board...</p>
+                      <span id="preview-private" class="badge bg-secondary" th:classappend="${board.isPrivate ? '' : 'd-none'}">Privado</span>
                     </div>
                   </div>
                 </div>
@@ -108,9 +112,6 @@
           descInput.addEventListener('input', updatePreview);
           coverInput.addEventListener('input', updatePreview);
           privateInput.addEventListener('change', updatePreview);
-
-          // Verifica se já existem valores
-          updatePreview();
         });
       </script>
     </section>
