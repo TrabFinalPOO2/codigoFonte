@@ -61,50 +61,61 @@
                                 
                                 <hr>
                                 
-                                <div class="d-flex justify-content-between mt-3">
-                                    <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-danger">
-                                        <i class="fa fa-heart"></i> Curtir
-                                    </a>
+                                <!-- Ações do Pin - Layout responsivo -->
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 mt-3">
+                                    <!-- Botão de curtir -->
+                                    <div class="col d-grid mb-2">
+                                        <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-danger">
+                                            <i class="fa fa-heart"></i> Curtir
+                                        </a>
+                                    </div>
                                     
                                     <!-- Botão de favoritar -->
-                                    <button th:if="${session.currentUser != null}" 
-                                            class="btn favorite-btn" 
-                                            th:classappend="${isFavorited} ? 'btn-warning' : 'btn-outline-warning'"
-                                            th:attr="data-pin-id=${pin.id}">
-                                        <i class="fa" th:classappend="${isFavorited} ? 'fa-star' : 'fa-star-o'"></i>
-                                        <span th:text="${isFavorited} ? 'Favoritado' : 'Favoritar'">Favoritar</span>
-                                    </button>
-                                    <a th:unless="${session.currentUser != null}" 
-                                       th:href="@{/auth/login}" 
-                                       class="btn btn-outline-warning">
-                                        <i class="fa fa-star-o"></i> Favoritar
-                                    </a>
+                                    <div class="col d-grid mb-2">
+                                        <button th:if="${session.currentUser != null}" 
+                                                class="btn favorite-btn" 
+                                                th:classappend="${isFavorited} ? 'btn-warning' : 'btn-outline-warning'"
+                                                th:attr="data-pin-id=${pin.id}">
+                                            <i class="fa" th:classappend="${isFavorited} ? 'fa-star' : 'fa-star-o'"></i>
+                                            <span th:text="${isFavorited} ? 'Favoritado' : 'Favoritar'">Favoritar</span>
+                                        </button>
+                                        <a th:unless="${session.currentUser != null}" 
+                                           th:href="@{/auth/login}" 
+                                           class="btn btn-outline-warning">
+                                            <i class="fa fa-star-o"></i> Favoritar
+                                        </a>
+                                    </div>
                                     
                                     <!-- Botão de salvar -->
-                                    <button th:if="${session.currentUser != null}" 
-                                            class="btn save-btn" 
-                                            th:classappend="${isSaved} ? 'btn-primary' : 'btn-outline-primary'"
-                                            th:attr="data-pin-id=${pin.id}">
-                                        <i class="fa" th:classappend="${isSaved} ? 'fa-bookmark' : 'fa-bookmark-o'"></i>
-                                        <span th:text="${isSaved} ? 'Salvo' : 'Salvar'">Salvar</span>
-                                    </button>
-                                    <a th:unless="${session.currentUser != null}" 
-                                       th:href="@{/auth/login}" 
-                                       class="btn btn-outline-primary">
-                                        <i class="fa fa-bookmark-o"></i> Salvar
-                                    </a>
-                                    
-                                    <div class="dropdown">
-                                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
-                                                id="shareDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa fa-share-alt"></i> Compartilhar
+                                    <div class="col d-grid mb-2">
+                                        <button th:if="${session.currentUser != null}" 
+                                                class="btn save-btn" 
+                                                th:classappend="${isSaved} ? 'btn-primary' : 'btn-outline-primary'"
+                                                th:attr="data-pin-id=${pin.id}">
+                                            <i class="fa" th:classappend="${isSaved} ? 'fa-bookmark' : 'fa-bookmark-o'"></i>
+                                            <span th:text="${isSaved} ? 'Salvo' : 'Salvar'">Salvar</span>
                                         </button>
-                                        <ul class="dropdown-menu" aria-labelledby="shareDropdown">
-                                            <li><a class="dropdown-item" href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                                            <li><a class="dropdown-item" href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                                            <li><a class="dropdown-item" href="#"><i class="fab fa-pinterest"></i> Pinterest</a></li>
-                                            <li><a class="dropdown-item" href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                                        </ul>
+                                        <a th:unless="${session.currentUser != null}" 
+                                           th:href="@{/auth/login}" 
+                                           class="btn btn-outline-primary">
+                                            <i class="fa fa-bookmark-o"></i> Salvar
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Botão de compartilhar -->
+                                    <div class="col d-grid mb-2">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" 
+                                                    id="shareDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-share-alt"></i> Compartilhar
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="shareDropdown">
+                                                <li><a class="dropdown-item" href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fab fa-pinterest"></i> Pinterest</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                                 
