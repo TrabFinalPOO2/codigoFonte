@@ -1,174 +1,196 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="layouts/main :: body(~{::div})">
+
 <head>
-    <title>Sobre | Pinboard</title>
+  <title>Sobre | Pinboard</title>
 </head>
+
 <body>
-    <div>
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h1 class="card-title h3">
-                            <i class="fa fa-info-circle me-2"></i> Sobre o Pinboard
-                        </h1>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 text-center mb-4">
-                                <h2 th:text="${appName} + ' v' + ${appVersion}">Pinboard</h2>
-                                <p class="lead" th:text="${patternsSummary}">
-                                    Aplicação desenvolvida com Spring Boot utilizando diversos padrões de projeto.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h3 class="border-bottom pb-2">Padrões de Projeto Implementados</h3>
-                            </div>
-                        </div>
-                        
-                        <!-- Singleton Pattern -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-cubes me-2"></i> Singleton
-                                        </h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>O padrão Singleton garante que uma classe tenha apenas uma instância e fornece um ponto global de acesso a ela.</p>
-                                        <div class="alert alert-secondary">
-                                            <p><strong>Implementação:</strong></p>
-                                            <ul>
-                                                <li><strong>ConfigurationManager:</strong> Gerencia as configurações globais da aplicação.</li>
-                                                <li>Permite acesso centralizado a parâmetros de configuração como nome da aplicação, versão e modo de depuração.</li>
-                                                <li>Disponível em toda a aplicação através do método estático <code>getInstance()</code>.</li>
-                                            </ul>
-                                        </div>
-                                        <p>Com este padrão, garantimos que apenas uma instância de configuração seja usada em todo o sistema, mantendo consistência nos parâmetros da aplicação.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Observer Pattern -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-eye me-2"></i> Observer
-                                        </h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>O padrão Observer define uma dependência um-para-muitos entre objetos, de modo que quando um objeto muda de estado, todos os seus dependentes são notificados e atualizados automaticamente.</p>
-                                        <div class="alert alert-secondary">
-                                            <p><strong>Componentes implementados:</strong></p>
-                                            <ul>
-                                                <li><strong>PinSubject (interface):</strong> Define os métodos para gerenciar observadores.</li>
-                                                <li><strong>PinObserver (interface):</strong> Define o método de atualização.</li>
-                                                <li><strong>PinNotificationService:</strong> Implementação concreta do Subject que notifica os observadores.</li>
-                                                <li><strong>ActivityLogObserver:</strong> Implementação concreta do Observer que registra atividades.</li>
-                                            </ul>
-                                        </div>
-                                        <p>Este padrão é utilizado para registrar atividades no sistema, como criação de pins, likes e outras interações dos usuários.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Factory Pattern -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-industry me-2"></i> Factory
-                                        </h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>O padrão Factory fornece uma interface para criar objetos em uma superclasse, mas permite que as subclasses alterem o tipo de objetos que serão criados.</p>
-                                        <div class="alert alert-secondary">
-                                            <p><strong>Componentes implementados:</strong></p>
-                                            <ul>
-                                                <li><strong>PinLayout (interface):</strong> Define a interface para os layouts de exibição.</li>
-                                                <li><strong>LayoutFactory:</strong> Fábrica que cria diferentes tipos de layouts (Grid, List, Masonry).</li>
-                                                <li><strong>Implementações concretas:</strong> GridLayout, ListLayout, MasonryLayout.</li>
-                                            </ul>
-                                        </div>
-                                        <p>Com este padrão, podemos criar diferentes layouts para exibição de pins sem acoplar o código cliente aos tipos concretos de layout.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Decorator Pattern -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-palette me-2"></i> Decorator
-                                        </h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>O padrão Decorator permite adicionar novas funcionalidades a objetos existentes sem alterar sua estrutura, encapsulando o objeto em objetos decoradores.</p>
-                                        <div class="alert alert-secondary">
-                                            <p><strong>Componentes implementados:</strong></p>
-                                            <ul>
-                                                <li><strong>PinComponent (interface):</strong> Define a interface comum para componentes e decoradores.</li>
-                                                <li><strong>BasicPin:</strong> Implementação básica de um pin.</li>
-                                                <li><strong>PinDecorator:</strong> Classe abstrata base para decoradores de pins.</li>
-                                                <li><strong>Decoradores concretos:</strong> FeaturedPinDecorator, SocialSharingDecorator.</li>
-                                            </ul>
-                                        </div>
-                                        <p>Este padrão nos permite adicionar dinamicamente recursos a pins, como destaque visual para pins populares ou funcionalidades de compartilhamento.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Strategy Pattern -->
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card mb-4">
-                                    <div class="card-header bg-light">
-                                        <h4 class="mb-0">
-                                            <i class="fa fa-chess me-2"></i> Strategy
-                                        </h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>O padrão Strategy define uma família de algoritmos, encapsula cada um deles e os torna intercambiáveis. Permite que o algoritmo varie independentemente dos clientes que o utilizam.</p>
-                                        <div class="alert alert-secondary">
-                                            <p><strong>Componentes implementados:</strong></p>
-                                            <ul>
-                                                <li><strong>SortingStrategy (interface):</strong> Define a interface para algoritmos de ordenação.</li>
-                                                <li><strong>Estratégias concretas:</strong> DateStrategy (ordenação por data), PopularityStrategy (ordenação por número de likes).</li>
-                                                <li><strong>PinService:</strong> Utiliza as estratégias para fornecer diferentes métodos de ordenação de pins.</li>
-                                            </ul>
-                                        </div>
-                                        <p>Com este padrão, permitimos aos usuários alternar entre diferentes critérios de ordenação para visualizar pins, como por data de criação ou por popularidade.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mt-4">
-                            <div class="col-md-12 text-center">
-                                <a th:href="@{/}" class="btn btn-primary">
-                                    <i class="fa fa-home me-2"></i> Voltar para a página inicial
-                                </a>
-                                <a th:href="@{/activities}" class="btn btn-secondary ms-2">
-                                    <i class="fa fa-clock me-2"></i> Ver atividades do sistema
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div>
+    <div class="row">
+      <div class="col-md-12 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h1 class="card-title h3">
+              <i class="fa fa-info-circle me-2"></i> Sobre o Pinboard
+            </h1>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12 text-center mb-4">
+                <h2 th:text="${appName} + ' v' + ${appVersion}">Pinboard</h2>
+                <p class="lead" th:text="${patternsSummary}">
+                  Aplicação desenvolvida com Spring Boot utilizando diversos padrões de projeto.
+                </p>
+              </div>
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="border-bottom pb-2">Padrões de Projeto Implementados</h3>
+              </div>
+            </div>
+
+            <!-- Singleton Pattern -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-cubes me-2"></i> Singleton
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O padrão Singleton garante que uma classe tenha apenas uma instância e fornece um ponto global de
+                      acesso a ela.</p>
+                    <div class="alert alert-secondary">
+                      <p><strong>Implementação:</strong></p>
+                      <ul>
+                        <li><strong>ConfigurationManager:</strong> Gerencia as configurações globais da aplicação.</li>
+                        <li>Permite acesso centralizado a parâmetros de configuração como nome da aplicação, versão e
+                          modo de depuração.</li>
+                        <li>Disponível em toda a aplicação através do método estático <code>getInstance()</code>.</li>
+                      </ul>
+                    </div>
+                    <p>Com este padrão, garantimos que apenas uma instância de configuração seja usada em todo o
+                      sistema, mantendo consistência nos parâmetros da aplicação.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Observer Pattern -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-eye me-2"></i> Observer
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O padrão Observer define uma dependência um-para-muitos entre objetos, de modo que quando um
+                      objeto muda de estado, todos os seus dependentes são notificados e atualizados automaticamente.
+                    </p>
+                    <div class="alert alert-secondary">
+                      <p><strong>Componentes implementados:</strong></p>
+                      <ul>
+                        <li><strong>PinSubject (interface):</strong> Define os métodos para gerenciar observadores.</li>
+                        <li><strong>PinObserver (interface):</strong> Define o método de atualização.</li>
+                        <li><strong>PinNotificationService:</strong> Implementação concreta do Subject que notifica os
+                          observadores.</li>
+                        <li><strong>ActivityLogObserver:</strong> Implementação concreta do Observer que registra
+                          atividades.</li>
+                      </ul>
+                    </div>
+                    <p>Este padrão é utilizado para registrar atividades no sistema, como criação de pins, likes e
+                      outras interações dos usuários.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Factory Pattern -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-industry me-2"></i> Factory
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O padrão Factory fornece uma interface para criar objetos em uma superclasse, mas permite que as
+                      subclasses alterem o tipo de objetos que serão criados.</p>
+                    <div class="alert alert-secondary">
+                      <p><strong>Componentes implementados:</strong></p>
+                      <ul>
+                        <li><strong>PinLayout (interface):</strong> Define a interface para os layouts de exibição.</li>
+                        <li><strong>LayoutFactory:</strong> Fábrica que cria diferentes tipos de layouts (Grid, List,
+                          Masonry).</li>
+                        <li><strong>Implementações concretas:</strong> GridLayout, ListLayout, MasonryLayout.</li>
+                      </ul>
+                    </div>
+                    <p>Com este padrão, podemos criar diferentes layouts para exibição de pins sem acoplar o código
+                      cliente aos tipos concretos de layout.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Decorator Pattern -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-palette me-2"></i> Decorator
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O padrão Decorator permite adicionar novas funcionalidades a objetos existentes sem alterar sua
+                      estrutura, encapsulando o objeto em objetos decoradores.</p>
+                    <div class="alert alert-secondary">
+                      <p><strong>Componentes implementados:</strong></p>
+                      <ul>
+                        <li><strong>PinComponent (interface):</strong> Define a interface comum para componentes e
+                          decoradores.</li>
+                        <li><strong>BasicPin:</strong> Implementação básica de um pin.</li>
+                        <li><strong>PinDecorator:</strong> Classe abstrata base para decoradores de pins.</li>
+                        <li><strong>Decoradores concretos:</strong> FeaturedPinDecorator, SocialSharingDecorator.</li>
+                      </ul>
+                    </div>
+                    <p>Este padrão nos permite adicionar dinamicamente recursos a pins, como destaque visual para pins
+                      populares ou funcionalidades de compartilhamento.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strategy Pattern -->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-chess me-2"></i> Strategy
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O padrão Strategy define uma família de algoritmos, encapsula cada um deles e os torna
+                      intercambiáveis. Permite que o algoritmo varie independentemente dos clientes que o utilizam.</p>
+                    <div class="alert alert-secondary">
+                      <p><strong>Componentes implementados:</strong></p>
+                      <ul>
+                        <li><strong>SortingStrategy (interface):</strong> Define a interface para algoritmos de
+                          ordenação.</li>
+                        <li><strong>Estratégias concretas:</strong> DateStrategy (ordenação por data),
+                          PopularityStrategy (ordenação por número de likes).</li>
+                        <li><strong>PinService:</strong> Utiliza as estratégias para fornecer diferentes métodos de
+                          ordenação de pins.</li>
+                      </ul>
+                    </div>
+                    <p>Com este padrão, permitimos aos usuários alternar entre diferentes critérios de ordenação para
+                      visualizar pins, como por data de criação ou por popularidade.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-12 text-center">
+                <a th:href="@{/}" class="btn btn-primary">
+                  <i class="fa fa-home me-2"></i> Voltar para a página inicial
+                </a>
+                <a th:href="@{/activities}" class="btn btn-secondary ms-2">
+                  <i class="fa fa-clock me-2"></i> Ver atividades do sistema
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </body>
+
 </html>

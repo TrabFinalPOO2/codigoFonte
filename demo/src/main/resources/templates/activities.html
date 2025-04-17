@@ -1,58 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layouts/main :: body(~{::div.content})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::div.content})}">
+
 <head>
-    <title>Atividades Recentes</title>
+  <title>Atividades Recentes</title>
 </head>
+
 <body>
-    <div class="content">
-        <h1 class="mb-4">Atividades Recentes</h1>
-        
-        <div class="card shadow-sm">
-            <div class="card-header bg-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span><i class="fa fa-clock"></i> Log de Atividades</span>
-                    <a href="#" onclick="window.location.reload()" class="btn btn-sm btn-outline-secondary">
-                        <i class="fa fa-sync"></i> Atualizar
-                    </a>
-                </div>
-            </div>
-            <div class="card-body">
-                <ul class="list-group" th:if="${!#lists.isEmpty(activities)}">
-                    <li class="list-group-item" th:each="activity : ${activities}">
-                        <i class="fa fa-bell text-danger me-2"></i>
-                        <span th:text="${activity}">Atividade</span>
-                    </li>
-                </ul>
-                <div class="alert alert-info" th:if="${#lists.isEmpty(activities)}">
-                    <i class="fa fa-info-circle"></i> Nenhuma atividade registrada ainda.
-                </div>
-            </div>
-            <div class="card-footer bg-white">
-                <small class="text-muted">
-                    As atividades são registradas pelo padrão Observer quando ações ocorrem no sistema.
-                </small>
-            </div>
+  <div class="content">
+    <h1 class="mb-4">Atividades Recentes</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <div class="d-flex justify-content-between align-items-center">
+          <span><i class="fa fa-clock"></i> Log de Atividades</span>
+          <a href="#" onclick="window.location.reload()" class="btn btn-sm btn-outline-secondary">
+            <i class="fa fa-sync"></i> Atualizar
+          </a>
         </div>
-        
-        <div class="card mt-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Sobre o Padrão Observer</h5>
-            </div>
-            <div class="card-body">
-                <p>O padrão Observer define uma dependência um-para-muitos entre objetos, de modo que quando um objeto muda de estado, todos os seus dependentes são notificados e atualizados automaticamente.</p>
-                <p>Nesta aplicação, o <code>PinNotificationService</code> atua como o Subject (observado) e o <code>ActivityLogObserver</code> é um Observer (observador) que registra todas as atividades.</p>
-                <div class="alert alert-secondary">
-                    <p><strong>Componentes do Padrão Observer implementados:</strong></p>
-                    <ul>
-                        <li><strong>PinSubject (interface):</strong> Define os métodos para gerenciar observadores</li>
-                        <li><strong>PinObserver (interface):</strong> Define o método de atualização</li>
-                        <li><strong>PinNotificationService:</strong> Implementação concreta do Subject</li>
-                        <li><strong>ActivityLogObserver:</strong> Implementação concreta do Observer</li>
-                    </ul>
-                </div>
-            </div>
+      </div>
+      <div class="card-body">
+        <ul class="list-group" th:if="${!#lists.isEmpty(activities)}">
+          <li class="list-group-item" th:each="activity : ${activities}">
+            <i class="fa fa-bell text-danger me-2"></i>
+            <span th:text="${activity}">Atividade</span>
+          </li>
+        </ul>
+        <div class="alert alert-info" th:if="${#lists.isEmpty(activities)}">
+          <i class="fa fa-info-circle"></i> Nenhuma atividade registrada ainda.
         </div>
+      </div>
+      <div class="card-footer bg-white">
+        <small class="text-muted">
+          As atividades são registradas pelo padrão Observer quando ações ocorrem no sistema.
+        </small>
+      </div>
     </div>
+
+    <div class="card mt-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Sobre o Padrão Observer</h5>
+      </div>
+      <div class="card-body">
+        <p>O padrão Observer define uma dependência um-para-muitos entre objetos, de modo que quando um objeto muda de
+          estado, todos os seus dependentes são notificados e atualizados automaticamente.</p>
+        <p>Nesta aplicação, o <code>PinNotificationService</code> atua como o Subject (observado) e o
+          <code>ActivityLogObserver</code> é um Observer (observador) que registra todas as atividades.</p>
+        <div class="alert alert-secondary">
+          <p><strong>Componentes do Padrão Observer implementados:</strong></p>
+          <ul>
+            <li><strong>PinSubject (interface):</strong> Define os métodos para gerenciar observadores</li>
+            <li><strong>PinObserver (interface):</strong> Define o método de atualização</li>
+            <li><strong>PinNotificationService:</strong> Implementação concreta do Subject</li>
+            <li><strong>ActivityLogObserver:</strong> Implementação concreta do Observer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

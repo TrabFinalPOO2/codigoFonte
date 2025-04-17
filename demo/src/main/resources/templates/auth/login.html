@@ -1,66 +1,67 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layouts/main :: body(~{::div.content})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::div.content})}">
+
 <head>
-    <title>Login</title>
+  <title>Login</title>
 </head>
+
 <body>
-    <div class="content">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="card-title mb-0 text-center">Login</h3>
-                    </div>
-                    <div class="card-body p-4">
-                        <!-- Mensagens de alerta -->
-                        <div th:if="${error}" class="alert alert-danger" role="alert">
-                            <i class="fa fa-exclamation-circle"></i> <span th:text="${error}"></span>
-                        </div>
-                        <div th:if="${success}" class="alert alert-success" role="alert">
-                            <i class="fa fa-check-circle"></i> <span th:text="${success}"></span>
-                        </div>
-                        
-                        <!-- Formulário de login -->
-                        <form th:action="@{/auth/login}" method="post">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fa fa-envelope"></i></span>
-                                    <input type="email" class="form-control" id="email" name="email" 
-                                           placeholder="seu@email.com" required>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Senha</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="password" name="password" 
-                                           placeholder="Sua senha" required>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
-                                <label class="form-check-label" for="remember-me">Lembrar de mim</label>
-                            </div>
-                            
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-sign-in-alt"></i> Entrar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <p class="mb-0">Não tem uma conta? 
-                            <a th:href="@{/auth/register}" class="text-decoration-none">Cadastre-se</a>
-                        </p>
-                    </div>
-                </div>
+  <div class="content">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0 text-center">Login</h3>
+          </div>
+          <div class="card-body p-4">
+            <!-- Mensagens de alerta -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+              <i class="fa fa-exclamation-circle"></i> <span th:text="${error}"></span>
             </div>
+            <div th:if="${success}" class="alert alert-success" role="alert">
+              <i class="fa fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+
+            <!-- Formulário de login -->
+            <form th:action="@{/auth/login}" method="post">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Sua senha"
+                    required>
+                </div>
+              </div>
+
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                <label class="form-check-label" for="remember-me">Lembrar de mim</label>
+              </div>
+
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa fa-sign-in-alt"></i> Entrar
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer text-center">
+            <p class="mb-0">Não tem uma conta?
+              <a th:href="@{/auth/register}" class="text-decoration-none">Cadastre-se</a>
+            </p>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </body>
+
 </html>

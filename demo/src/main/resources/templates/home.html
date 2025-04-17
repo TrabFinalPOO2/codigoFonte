@@ -1,110 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Página Inicial</title>
+  <meta charset="UTF-8">
+  <title>Página Inicial</title>
 </head>
+
 <body>
-    <div th:replace="~{layouts/main :: body(content=~{::section})}">
-        <section>
-            <div class="jumbotron bg-light p-5 rounded-3 mb-4">
-                <div class="container">
-                    <h1 class="display-4">Bem-vindo ao <span th:text="${appName}">Pinboard</span>!</h1>
-                    <p class="lead">Descubra, colecione e organize suas ideias favoritas em boards.</p>
-                    <hr class="my-4">
-                    <p>Crie pins, crie boards, encontre inspiração, e compartilhe com amigos.</p>
-                    <a class="btn btn-danger btn-lg" th:href="@{/pins/new}" role="button">
-                        <i class="fa fa-plus-circle"></i> Criar Pin
-                    </a>
-                    <a class="btn btn-outline-danger btn-lg ms-2" th:href="@{/boards/new}" role="button">
-                        <i class="fa fa-th-large"></i> Criar Board
-                    </a>
-                </div>
-            </div>
+  <div th:replace="~{layouts/main :: body(content=~{::section})}">
+    <section>
+      <div class="jumbotron bg-light p-5 rounded-3 mb-4">
+        <div class="container">
+          <h1 class="display-4">Bem-vindo ao <span th:text="${appName}">Pinboard</span>!</h1>
+          <p class="lead">Descubra, colecione e organize suas ideias favoritas em boards.</p>
+          <hr class="my-4">
+          <p>Crie pins, crie boards, encontre inspiração, e compartilhe com amigos.</p>
+          <a class="btn btn-danger btn-lg" th:href="@{/pins/new}" role="button">
+            <i class="fa fa-plus-circle"></i> Criar Pin
+          </a>
+          <a class="btn btn-outline-danger btn-lg ms-2" th:href="@{/boards/new}" role="button">
+            <i class="fa fa-th-large"></i> Criar Board
+          </a>
+        </div>
+      </div>
 
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2>Pins em Destaque</h2>
-                        <a th:href="@{/pins}" class="btn btn-sm btn-outline-secondary">Ver Todos</a>
-                    </div>
-                    <div class="row g-4" th:if="${!#lists.isEmpty(featuredPins)}">
-                        <div class="col-sm-6 col-md-4 col-lg-3" th:each="pin : ${featuredPins}">
-                            <div class="card pin-card h-100">
-                                <div class="featured-badge">
-                                    <i class="fa fa-star"></i> Destaque
-                                </div>
-                                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}" 
-                                     src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                    <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
-                                </div>
-                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                                    </small>
-                                    <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
-                                        <i class="fa fa-eye"></i> Ver
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="alert alert-info" th:if="${#lists.isEmpty(featuredPins)}">
-                        Nenhum pin em destaque no momento.
-                    </div>
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Pins em Destaque</h2>
+            <a th:href="@{/pins}" class="btn btn-sm btn-outline-secondary">Ver Todos</a>
+          </div>
+          <div class="row g-4" th:if="${!#lists.isEmpty(featuredPins)}">
+            <div class="col-sm-6 col-md-4 col-lg-3" th:each="pin : ${featuredPins}">
+              <div class="card pin-card h-100">
+                <div class="featured-badge">
+                  <i class="fa fa-star"></i> Destaque
                 </div>
+                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
+                  src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                  <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                  </small>
+                  <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
+                    <i class="fa fa-eye"></i> Ver
+                  </a>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="alert alert-info" th:if="${#lists.isEmpty(featuredPins)}">
+            Nenhum pin em destaque no momento.
+          </div>
+        </div>
+      </div>
 
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2>Descobrir Pins</h2>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
-                                    id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-sort"></i> Ordenar
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><a class="dropdown-item" th:href="@{/(sort='date')}">Mais recentes</a></li>
-                                <li><a class="dropdown-item" th:href="@{/(sort='popular')}">Mais populares</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="masonry-grid row g-4" th:if="${!#lists.isEmpty(allPins)}">
-                        <div class="col-sm-6 col-md-4 col-lg-3 masonry-item" th:each="pin : ${allPins}">
-                            <div class="card pin-card h-100">
-                                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
-                                     src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                    <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
-                                </div>
-                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                                    </small>
-                                    <div class="btn-group">
-                                        <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
-                                            <i class="fa fa-heart"></i>
-                                        </a>
-                                        <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-info" th:if="${#lists.isEmpty(allPins)}">
-                        Nenhum pin encontrado. <a th:href="@{/pins/new}" class="alert-link">Crie o primeiro pin!</a>
-                    </div>
-                </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Descobrir Pins</h2>
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-sort"></i> Ordenar
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                <li><a class="dropdown-item" th:href="@{/(sort='date')}">Mais recentes</a></li>
+                <li><a class="dropdown-item" th:href="@{/(sort='popular')}">Mais populares</a></li>
+              </ul>
             </div>
-        </section>
-    </div>
+          </div>
+
+          <div class="masonry-grid row g-4" th:if="${!#lists.isEmpty(allPins)}">
+            <div class="col-sm-6 col-md-4 col-lg-3 masonry-item" th:each="pin : ${allPins}">
+              <div class="card pin-card h-100">
+                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
+                  src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                  <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                  </small>
+                  <div class="btn-group">
+                    <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
+                      <i class="fa fa-heart"></i>
+                    </a>
+                    <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-primary">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" th:if="${#lists.isEmpty(allPins)}">
+            Nenhum pin encontrado. <a th:href="@{/pins/new}" class="alert-link">Crie o primeiro pin!</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </body>
+
 </html>

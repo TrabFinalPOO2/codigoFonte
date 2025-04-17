@@ -1,264 +1,259 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Detalhes do Pin</title>
+  <meta charset="UTF-8">
+  <title>Detalhes do Pin</title>
 </head>
+
 <body>
-    <div th:replace="~{layouts/main :: body(content=~{::section})}">
-        <section>
-            <div class="container">
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                        <li class="breadcrumb-item"><a th:href="@{/pins}">Pins</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" th:text="${pin.title}">Pin</li>
-                    </ol>
-                </nav>
-                
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="card shadow-sm">
-                            <img th:src="${pin.imageUrl}" class="img-fluid rounded" th:alt="${pin.title}" 
-                                 src="https://via.placeholder.com/800x600" alt="Imagem do Pin">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm">
-                            <div class="card-body">
-                                <div th:if="${pin.featured}" class="featured-badge mb-3">
-                                    <i class="fa fa-star"></i> Destaque
-                                </div>
-                                <h1 class="card-title h3" th:text="${pin.title}">Título do Pin</h1>
-                                <p class="card-text" th:text="${pin.description}">Descrição do pin...</p>
-                                
-                                <div class="d-flex align-items-center mb-3">
-                                    <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null}" 
-                                         th:src="${pin.creator.profileImageUrl}" 
-                                         class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" alt="Avatar">
-                                    <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null}" 
-                                         src="https://via.placeholder.com/40" 
-                                         class="rounded-circle me-2" alt="Avatar">
-                                    <a th:if="${pin.creator != null}" 
-                                       th:href="@{/profile/{username}(username=${pin.creator.username})}" 
-                                       class="text-decoration-none">
-                                        <span th:text="${pin.creator.username}">Usuário</span>
-                                    </a>
-                                    <span th:unless="${pin.creator != null}">Usuário Anônimo</span>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="text-muted">
-                                            <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                                        </span>
-                                        <span class="ms-3 text-muted">
-                                            <i class="fa fa-calendar"></i> 
-                                            <span th:text="${#temporals.format(pin.createdAt, 'dd/MM/yyyy')}">01/01/2025</span>
-                                        </span>
-                                    </div>
-                                </div>
-                                
-                                <hr>
-                                
-                                <!-- Ações do Pin - Layout responsivo -->
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 mt-3">
-                                    <!-- Botão de curtir -->
-                                    <div class="col d-grid mb-2">
-                                        <a th:if="${session.currentUser != null}" 
-                                           th:href="@{/pins/{id}/like(id=${pin.id})}" 
-                                           class="btn" 
-                                           th:classappend="${isLiked} ? 'btn-danger' : 'btn-outline-danger'">
-                                            <i class="fa fa-heart"></i> 
-                                            <span th:text="${isLiked} ? 'Curtido' : 'Curtir'">Curtir</span>
-                                        </a>
-                                        <a th:unless="${session.currentUser != null}" 
-                                           th:href="@{/auth/login}" 
-                                           class="btn btn-outline-danger">
-                                            <i class="fa fa-heart"></i> Curtir
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- Botão de favoritar -->
-                                    <div class="col d-grid mb-2">
-                                        <button th:if="${session.currentUser != null}" 
-                                                class="btn favorite-btn" 
-                                                th:classappend="${isFavorited} ? 'btn-warning' : 'btn-outline-warning'"
-                                                th:attr="data-pin-id=${pin.id}">
-                                            <i class="fa" th:classappend="${isFavorited} ? 'fa-star' : 'fa-star-o'"></i>
-                                            <span th:text="${isFavorited} ? 'Favoritado' : 'Favoritar'">Favoritar</span>
-                                        </button>
-                                        <a th:unless="${session.currentUser != null}" 
-                                           th:href="@{/auth/login}" 
-                                           class="btn btn-outline-warning">
-                                            <i class="fa fa-star-o"></i> Favoritar
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- Botão de salvar -->
-                                    <div class="col d-grid mb-2">
-                                        <button th:if="${session.currentUser != null}" 
-                                                class="btn save-btn" 
-                                                th:classappend="${isSaved} ? 'btn-primary' : 'btn-outline-primary'"
-                                                th:attr="data-pin-id=${pin.id}">
-                                            <i class="fa" th:classappend="${isSaved} ? 'fa-bookmark' : 'fa-bookmark-o'"></i>
-                                            <span th:text="${isSaved} ? 'Salvo' : 'Salvar'">Salvar</span>
-                                        </button>
-                                        <a th:unless="${session.currentUser != null}" 
-                                           th:href="@{/auth/login}" 
-                                           class="btn btn-outline-primary">
-                                            <i class="fa fa-bookmark-o"></i> Salvar
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- Botão de compartilhar -->
-                                    <div class="col d-grid mb-2">
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" 
-                                                    id="shareDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fa fa-share-alt"></i> Compartilhar
-                                            </button>
-                                            <ul class="dropdown-menu" aria-labelledby="shareDropdown">
-                                                <li><a class="dropdown-item" href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fab fa-pinterest"></i> Pinterest</a></li>
-                                                <li><a class="dropdown-item" href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-4" th:if="${session.currentUser != null && pin.creator != null && session.currentUser.id == pin.creator.id}">
-                                    <a th:href="@{/pins/{id}/edit(id=${pin.id})}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fa fa-edit"></i> Editar
-                                    </a>
-                                    <a th:href="@{/pins/{id}/delete(id=${pin.id})}" class="btn btn-sm btn-outline-danger"
-                                       onclick="return confirm('Tem certeza que deseja excluir este pin?')">
-                                        <i class="fa fa-trash"></i> Excluir
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-5">
-                    <div class="col-12">
-                        <h3>Pins relacionados</h3>
-                        <div class="row">
-                            <!-- Aqui seriam exibidos pins relacionados -->
-                            <div class="col-md-3 mb-4">
-                                <div class="card pin-card">
-                                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Pin relacionado">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Pin relacionado</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-4">
-                                <div class="card pin-card">
-                                    <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="Pin relacionado">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Pin relacionado</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-4">
-                                <div class="card pin-card">
-                                    <img src="https://via.placeholder.com/300x250" class="card-img-top" alt="Pin relacionado">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Pin relacionado</h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-4">
-                                <div class="card pin-card">
-                                    <img src="https://via.placeholder.com/300x180" class="card-img-top" alt="Pin relacionado">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Pin relacionado</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div th:replace="~{layouts/main :: body(content=~{::section})}">
+    <section>
+      <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/pins}">Pins</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${pin.title}">Pin</li>
+          </ol>
+        </nav>
+
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card shadow-sm">
+              <img th:src="${pin.imageUrl}" class="img-fluid rounded" th:alt="${pin.title}"
+                src="https://via.placeholder.com/800x600" alt="Imagem do Pin">
             </div>
-            
-            <!-- JavaScript para as funcionalidades de favoritar e salvar -->
-            <script th:inline="javascript">
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Botão de favoritar
-                    const favoriteButtons = document.querySelectorAll('.favorite-btn');
-                    favoriteButtons.forEach(button => {
-                        button.addEventListener('click', function() {
-                            const pinId = this.getAttribute('data-pin-id');
-                            
-                            fetch(`/pins/${pinId}/favorite`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.text())
-                            .then(data => {
-                                // Alternar classe e ícone
-                                if (this.classList.contains('btn-outline-warning')) {
-                                    this.classList.remove('btn-outline-warning');
-                                    this.classList.add('btn-warning');
-                                    this.querySelector('i').classList.remove('fa-star-o');
-                                    this.querySelector('i').classList.add('fa-star');
-                                    this.querySelector('span').textContent = 'Favoritado';
-                                } else {
-                                    this.classList.remove('btn-warning');
-                                    this.classList.add('btn-outline-warning');
-                                    this.querySelector('i').classList.remove('fa-star');
-                                    this.querySelector('i').classList.add('fa-star-o');
-                                    this.querySelector('span').textContent = 'Favoritar';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Erro:', error);
-                            });
-                        });
-                    });
-                    
-                    // Botão de salvar
-                    const saveButtons = document.querySelectorAll('.save-btn');
-                    saveButtons.forEach(button => {
-                        button.addEventListener('click', function() {
-                            const pinId = this.getAttribute('data-pin-id');
-                            
-                            fetch(`/pins/${pinId}/save`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.text())
-                            .then(data => {
-                                // Alternar classe e ícone
-                                if (this.classList.contains('btn-outline-primary')) {
-                                    this.classList.remove('btn-outline-primary');
-                                    this.classList.add('btn-primary');
-                                    this.querySelector('i').classList.remove('fa-bookmark-o');
-                                    this.querySelector('i').classList.add('fa-bookmark');
-                                    this.querySelector('span').textContent = 'Salvo';
-                                } else {
-                                    this.classList.remove('btn-primary');
-                                    this.classList.add('btn-outline-primary');
-                                    this.querySelector('i').classList.remove('fa-bookmark');
-                                    this.querySelector('i').classList.add('fa-bookmark-o');
-                                    this.querySelector('span').textContent = 'Salvar';
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Erro:', error);
-                            });
-                        });
-                    });
+          </div>
+          <div class="col-md-4">
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <div th:if="${pin.featured}" class="featured-badge mb-3">
+                  <i class="fa fa-star"></i> Destaque
+                </div>
+                <h1 class="card-title h3" th:text="${pin.title}">Título do Pin</h1>
+                <p class="card-text" th:text="${pin.description}">Descrição do pin...</p>
+
+                <div class="d-flex align-items-center mb-3">
+                  <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null}"
+                    th:src="${pin.creator.profileImageUrl}" class="rounded-circle me-2"
+                    style="width: 40px; height: 40px; object-fit: cover;" alt="Avatar">
+                  <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null}"
+                    src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="Avatar">
+                  <a th:if="${pin.creator != null}" th:href="@{/profile/{username}(username=${pin.creator.username})}"
+                    class="text-decoration-none">
+                    <span th:text="${pin.creator.username}">Usuário</span>
+                  </a>
+                  <span th:unless="${pin.creator != null}">Usuário Anônimo</span>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="text-muted">
+                      <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                    </span>
+                    <span class="ms-3 text-muted">
+                      <i class="fa fa-calendar"></i>
+                      <span th:text="${#temporals.format(pin.createdAt, 'dd/MM/yyyy')}">01/01/2025</span>
+                    </span>
+                  </div>
+                </div>
+
+                <hr>
+
+                <!-- Ações do Pin - Layout responsivo -->
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 mt-3">
+                  <!-- Botão de curtir -->
+                  <div class="col d-grid mb-2">
+                    <a th:if="${session.currentUser != null}" th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn"
+                      th:classappend="${isLiked} ? 'btn-danger' : 'btn-outline-danger'">
+                      <i class="fa fa-heart"></i>
+                      <span th:text="${isLiked} ? 'Curtido' : 'Curtir'">Curtir</span>
+                    </a>
+                    <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}"
+                      class="btn btn-outline-danger">
+                      <i class="fa fa-heart"></i> Curtir
+                    </a>
+                  </div>
+
+                  <!-- Botão de favoritar -->
+                  <div class="col d-grid mb-2">
+                    <button th:if="${session.currentUser != null}" class="btn favorite-btn"
+                      th:classappend="${isFavorited} ? 'btn-warning' : 'btn-outline-warning'"
+                      th:attr="data-pin-id=${pin.id}">
+                      <i class="fa" th:classappend="${isFavorited} ? 'fa-star' : 'fa-star-o'"></i>
+                      <span th:text="${isFavorited} ? 'Favoritado' : 'Favoritar'">Favoritar</span>
+                    </button>
+                    <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}"
+                      class="btn btn-outline-warning">
+                      <i class="fa fa-star-o"></i> Favoritar
+                    </a>
+                  </div>
+
+                  <!-- Botão de salvar -->
+                  <div class="col d-grid mb-2">
+                    <button th:if="${session.currentUser != null}" class="btn save-btn"
+                      th:classappend="${isSaved} ? 'btn-primary' : 'btn-outline-primary'"
+                      th:attr="data-pin-id=${pin.id}">
+                      <i class="fa" th:classappend="${isSaved} ? 'fa-bookmark' : 'fa-bookmark-o'"></i>
+                      <span th:text="${isSaved} ? 'Salvo' : 'Salvar'">Salvar</span>
+                    </button>
+                    <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}"
+                      class="btn btn-outline-primary">
+                      <i class="fa fa-bookmark-o"></i> Salvar
+                    </a>
+                  </div>
+
+                  <!-- Botão de compartilhar -->
+                  <div class="col d-grid mb-2">
+                    <div class="dropdown">
+                      <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="shareDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-share-alt"></i> Compartilhar
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="shareDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fab fa-pinterest"></i> Pinterest</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-4"
+                  th:if="${session.currentUser != null && pin.creator != null && session.currentUser.id == pin.creator.id}">
+                  <a th:href="@{/pins/{id}/edit(id=${pin.id})}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-edit"></i> Editar
+                  </a>
+                  <a th:href="@{/pins/{id}/delete(id=${pin.id})}" class="btn btn-sm btn-outline-danger"
+                    onclick="return confirm('Tem certeza que deseja excluir este pin?')">
+                    <i class="fa fa-trash"></i> Excluir
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <h3>Pins relacionados</h3>
+            <div class="row">
+              <!-- Aqui seriam exibidos pins relacionados -->
+              <div class="col-md-3 mb-4">
+                <div class="card pin-card">
+                  <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Pin relacionado">
+                  <div class="card-body">
+                    <h5 class="card-title">Pin relacionado</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-4">
+                <div class="card pin-card">
+                  <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="Pin relacionado">
+                  <div class="card-body">
+                    <h5 class="card-title">Pin relacionado</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-4">
+                <div class="card pin-card">
+                  <img src="https://via.placeholder.com/300x250" class="card-img-top" alt="Pin relacionado">
+                  <div class="card-body">
+                    <h5 class="card-title">Pin relacionado</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3 mb-4">
+                <div class="card pin-card">
+                  <img src="https://via.placeholder.com/300x180" class="card-img-top" alt="Pin relacionado">
+                  <div class="card-body">
+                    <h5 class="card-title">Pin relacionado</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JavaScript para as funcionalidades de favoritar e salvar -->
+      <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+          // Botão de favoritar
+          const favoriteButtons = document.querySelectorAll('.favorite-btn');
+          favoriteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+              const pinId = this.getAttribute('data-pin-id');
+
+              fetch(`/pins/${pinId}/favorite`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+                .then(response => response.text())
+                .then(data => {
+                  // Alternar classe e ícone
+                  if (this.classList.contains('btn-outline-warning')) {
+                    this.classList.remove('btn-outline-warning');
+                    this.classList.add('btn-warning');
+                    this.querySelector('i').classList.remove('fa-star-o');
+                    this.querySelector('i').classList.add('fa-star');
+                    this.querySelector('span').textContent = 'Favoritado';
+                  } else {
+                    this.classList.remove('btn-warning');
+                    this.classList.add('btn-outline-warning');
+                    this.querySelector('i').classList.remove('fa-star');
+                    this.querySelector('i').classList.add('fa-star-o');
+                    this.querySelector('span').textContent = 'Favoritar';
+                  }
+                })
+                .catch(error => {
+                  console.error('Erro:', error);
                 });
-            </script>
-        </section>
-    </div>
+            });
+          });
+
+          // Botão de salvar
+          const saveButtons = document.querySelectorAll('.save-btn');
+          saveButtons.forEach(button => {
+            button.addEventListener('click', function () {
+              const pinId = this.getAttribute('data-pin-id');
+
+              fetch(`/pins/${pinId}/save`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+                .then(response => response.text())
+                .then(data => {
+                  // Alternar classe e ícone
+                  if (this.classList.contains('btn-outline-primary')) {
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-primary');
+                    this.querySelector('i').classList.remove('fa-bookmark-o');
+                    this.querySelector('i').classList.add('fa-bookmark');
+                    this.querySelector('span').textContent = 'Salvo';
+                  } else {
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-outline-primary');
+                    this.querySelector('i').classList.remove('fa-bookmark');
+                    this.querySelector('i').classList.add('fa-bookmark-o');
+                    this.querySelector('span').textContent = 'Salvar';
+                  }
+                })
+                .catch(error => {
+                  console.error('Erro:', error);
+                });
+            });
+          });
+        });
+      </script>
+    </section>
+  </div>
 </body>
+
 </html>

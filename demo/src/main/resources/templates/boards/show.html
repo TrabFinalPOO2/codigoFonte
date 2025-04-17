@@ -1,124 +1,127 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Visualizar Board</title>
+  <meta charset="UTF-8">
+  <title>Visualizar Board</title>
 </head>
+
 <body>
-    <div th:replace="~{layouts/main :: body(content=~{::section})}">
-        <section>
-            <div class="container">
-                <nav aria-label="breadcrumb" class="mb-4">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                        <li class="breadcrumb-item"><a th:href="@{/boards}">Boards</a></li>
-                        <li class="breadcrumb-item active" aria-current="page" th:text="${board.name}">Board</li>
-                    </ol>
-                </nav>
-                
-                <div class="row mb-4">
-                    <div class="col-md-8">
-                        <div class="board-header p-4 bg-light rounded-3 shadow-sm">
-                            <h1 class="display-5" th:text="${board.name}">Nome do Board</h1>
-                            <p class="lead" th:text="${board.description}">Descrição do board...</p>
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="Avatar">
-                                <span th:text="${board.owner != null ? board.owner.username : 'Usuário Anônimo'}">Usuário</span>
-                                <span class="badge bg-secondary ms-3" th:if="${board.isPrivate}">Privado</span>
-                                <span class="ms-auto text-muted">
-                                    <i class="fa fa-calendar"></i> 
-                                    <span th:text="${#temporals.format(board.createdAt, 'dd/MM/yyyy')}">01/01/2025</span>
-                                </span>
-                            </div>
-                            <div class="d-flex">
-                                <a th:href="@{/boards/{id}/edit(id=${board.id})}" class="btn btn-sm btn-outline-secondary me-2">
-                                    <i class="fa fa-edit"></i> Editar
-                                </a>
-                                <a th:href="@{/boards/{id}/delete(id=${board.id})}" class="btn btn-sm btn-outline-danger"
-                                   onclick="return confirm('Tem certeza que deseja excluir este board?')">
-                                    <i class="fa fa-trash"></i> Excluir
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0">Layouts de Visualização</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">Escolha como deseja visualizar os pins neste board:</p>
-                                <div class="d-grid gap-2">
-                                    <a th:href="@{/boards/{id}(id=${board.id}, layout='grid')}" class="btn btn-outline-primary">
-                                        <i class="fa fa-th"></i> Grid Layout
-                                    </a>
-                                    <a th:href="@{/boards/{id}(id=${board.id}, layout='masonry')}" class="btn btn-outline-primary">
-                                        <i class="fa fa-th-large"></i> Masonry Layout
-                                    </a>
-                                    <a th:href="@{/boards/{id}(id=${board.id}, layout='list')}" class="btn btn-outline-primary">
-                                        <i class="fa fa-list"></i> List Layout
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-white">
-                                <small class="text-muted">
-                                    <i class="fa fa-info-circle"></i> Estas opções demonstram o uso do padrão Factory.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h2>Pins neste Board</h2>
-                    <div class="alert alert-secondary">
-                        <div th:utext="${boardLayoutHtml}">
-                            <!-- Layout HTML gerado pela Factory será inserido aqui -->
-                        </div>
-                    </div>
-                </div>
-                
-                <div th:if="${!#lists.isEmpty(pins)}" th:with="layoutHtml=${boardLayoutHtml}">
-                    <div class="row g-4 pin-grid">
-                        <div class="col-sm-6 col-md-4 col-lg-3 pin-item" th:each="pin : ${pins}">
-                            <div class="card pin-card h-100">
-                                <div th:if="${pin.featured}" class="featured-badge">
-                                    <i class="fa fa-star"></i> Destaque
-                                </div>
-                                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
-                                     src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                    <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
-                                </div>
-                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">
-                                        <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                                    </small>
-                                    <div class="btn-group">
-                                        <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
-                                            <i class="fa fa-heart"></i>
-                                        </a>
-                                        <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-primary">
-                                            <i class="fa fa-eye"></i>
-                                        </a>
-                                        <a th:href="@{/boards/{boardId}/remove-pin/{pinId}(boardId=${board.id}, pinId=${pin.id})}" 
-                                           class="btn btn-sm btn-outline-secondary">
-                                            <i class="fa fa-times"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="alert alert-info" th:if="${#lists.isEmpty(pins)}">
-                    <i class="fa fa-info-circle"></i> Ainda não há pins neste board. 
-                    <a th:href="@{/pins}" class="alert-link">Adicione alguns pins!</a>
-                </div>
+  <div th:replace="~{layouts/main :: body(content=~{::section})}">
+    <section>
+      <div class="container">
+        <nav aria-label="breadcrumb" class="mb-4">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/boards}">Boards</a></li>
+            <li class="breadcrumb-item active" aria-current="page" th:text="${board.name}">Board</li>
+          </ol>
+        </nav>
+
+        <div class="row mb-4">
+          <div class="col-md-8">
+            <div class="board-header p-4 bg-light rounded-3 shadow-sm">
+              <h1 class="display-5" th:text="${board.name}">Nome do Board</h1>
+              <p class="lead" th:text="${board.description}">Descrição do board...</p>
+              <div class="d-flex align-items-center mb-3">
+                <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="Avatar">
+                <span th:text="${board.owner != null ? board.owner.username : 'Usuário Anônimo'}">Usuário</span>
+                <span class="badge bg-secondary ms-3" th:if="${board.isPrivate}">Privado</span>
+                <span class="ms-auto text-muted">
+                  <i class="fa fa-calendar"></i>
+                  <span th:text="${#temporals.format(board.createdAt, 'dd/MM/yyyy')}">01/01/2025</span>
+                </span>
+              </div>
+              <div class="d-flex">
+                <a th:href="@{/boards/{id}/edit(id=${board.id})}" class="btn btn-sm btn-outline-secondary me-2">
+                  <i class="fa fa-edit"></i> Editar
+                </a>
+                <a th:href="@{/boards/{id}/delete(id=${board.id})}" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Tem certeza que deseja excluir este board?')">
+                  <i class="fa fa-trash"></i> Excluir
+                </a>
+              </div>
             </div>
-        </section>
-    </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+              <div class="card-header bg-white">
+                <h5 class="mb-0">Layouts de Visualização</h5>
+              </div>
+              <div class="card-body">
+                <p class="card-text">Escolha como deseja visualizar os pins neste board:</p>
+                <div class="d-grid gap-2">
+                  <a th:href="@{/boards/{id}(id=${board.id}, layout='grid')}" class="btn btn-outline-primary">
+                    <i class="fa fa-th"></i> Grid Layout
+                  </a>
+                  <a th:href="@{/boards/{id}(id=${board.id}, layout='masonry')}" class="btn btn-outline-primary">
+                    <i class="fa fa-th-large"></i> Masonry Layout
+                  </a>
+                  <a th:href="@{/boards/{id}(id=${board.id}, layout='list')}" class="btn btn-outline-primary">
+                    <i class="fa fa-list"></i> List Layout
+                  </a>
+                </div>
+              </div>
+              <div class="card-footer bg-white">
+                <small class="text-muted">
+                  <i class="fa fa-info-circle"></i> Estas opções demonstram o uso do padrão Factory.
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <h2>Pins neste Board</h2>
+          <div class="alert alert-secondary">
+            <div th:utext="${boardLayoutHtml}">
+              <!-- Layout HTML gerado pela Factory será inserido aqui -->
+            </div>
+          </div>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(pins)}" th:with="layoutHtml=${boardLayoutHtml}">
+          <div class="row g-4 pin-grid">
+            <div class="col-sm-6 col-md-4 col-lg-3 pin-item" th:each="pin : ${pins}">
+              <div class="card pin-card h-100">
+                <div th:if="${pin.featured}" class="featured-badge">
+                  <i class="fa fa-star"></i> Destaque
+                </div>
+                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
+                  src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                  <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                  </small>
+                  <div class="btn-group">
+                    <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
+                      <i class="fa fa-heart"></i>
+                    </a>
+                    <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-primary">
+                      <i class="fa fa-eye"></i>
+                    </a>
+                    <a th:href="@{/boards/{boardId}/remove-pin/{pinId}(boardId=${board.id}, pinId=${pin.id})}"
+                      class="btn btn-sm btn-outline-secondary">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info" th:if="${#lists.isEmpty(pins)}">
+          <i class="fa fa-info-circle"></i> Ainda não há pins neste board.
+          <a th:href="@{/pins}" class="alert-link">Adicione alguns pins!</a>
+        </div>
+      </div>
+    </section>
+  </div>
 </body>
+
 </html>
