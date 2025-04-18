@@ -175,6 +175,52 @@
                 </div>
               </div>
             </div>
+            
+            <!-- Database Section -->
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="border-bottom pb-2 mt-4">Tecnologias de Persistência</h3>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card mb-4">
+                  <div class="card-header bg-light">
+                    <h4 class="mb-0">
+                      <i class="fa fa-database me-2"></i> Banco de Dados
+                    </h4>
+                  </div>
+                  <div class="card-body">
+                    <p>O Pinboard utiliza H2 Database como solução de persistência de dados, configurado para trabalhar com armazenamento em arquivo para garantir que os dados sejam mantidos entre reinicializações da aplicação.</p>
+                    
+                    <div class="alert alert-secondary">
+                      <p><strong>Características do banco de dados:</strong></p>
+                      <ul>
+                        <li><strong>H2 Database:</strong> Banco de dados SQL em Java, rápido e leve, ideal para desenvolvimento.</li>
+                        <li><strong>Modo Arquivo:</strong> Configurado para persistir dados em arquivos físicos para preservação entre sessões.</li>
+                        <li><strong>Console H2:</strong> Interface administrativa para gestão do banco disponível durante a execução.</li>
+                        <li><strong>JPA/Hibernate:</strong> Framework ORM para mapeamento objeto-relacional.</li>
+                        <li><strong>Modo Update:</strong> Esquema do banco é atualizado automaticamente quando as entidades do modelo são modificadas.</li>
+                      </ul>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                      <p><strong>Acesso ao console do banco de dados:</strong></p>
+                      <p>O console de administração do H2 está disponível em <code>http://localhost:8080/h2-console</code> durante a execução da aplicação.</p>
+                      <p><strong>Configurações de conexão:</strong></p>
+                      <ul>
+                        <li>URL: <code>jdbc:h2:file:./data/pinboarddb</code></li>
+                        <li>Usuário: <code>sa</code></li>
+                        <li>Senha: <em>(em branco)</em></li>
+                      </ul>
+                    </div>
+                    
+                    <p>Esta implementação garante que todos os dados criados pelos usuários (pins, boards, perfis, etc.) sejam preservados mesmo após o encerramento da aplicação, proporcionando uma experiência consistente.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div class="row mt-4">
               <div class="col-md-12 text-center">

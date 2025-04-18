@@ -46,6 +46,14 @@ public class DemoApplication {
             // Registrar o observer para o padrão Observer
             notificationService.registerObserver(activityLogObserver);
             
+            // Verificar se o banco de dados está vazio antes de criar dados de demonstração
+            if (userRepository.count() > 0) {
+                System.out.println("Banco de dados já contém dados. Pulando criação de dados de demonstração.");
+                return; // Não cria dados de demonstração se já existirem registros
+            }
+            
+            System.out.println("Inicializando banco de dados com dados de demonstração...");
+            
             // Criar alguns usuários de demonstração
             User user1 = new User();
             user1.setUsername("maria_silva");
@@ -135,6 +143,8 @@ public class DemoApplication {
             
             // Notificar sobre a criação dos pins
             notificationService.notifyObservers("Aplicação inicializada com dados de demonstração", 0L);
+            
+            System.out.println("Banco de dados inicializado com sucesso!");
         };
     }
 }
