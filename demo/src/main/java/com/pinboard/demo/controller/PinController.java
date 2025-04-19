@@ -1,6 +1,8 @@
 package com.pinboard.demo.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pinboard.demo.model.Comment;
 import com.pinboard.demo.model.Pin;
 import com.pinboard.demo.model.User;
 import com.pinboard.demo.pattern.singleton.ConfigurationManager;
@@ -22,6 +25,7 @@ import com.pinboard.demo.pattern.strategy.DateStrategy;
 import com.pinboard.demo.pattern.strategy.PopularityStrategy;
 import com.pinboard.demo.pattern.strategy.SortingStrategy;
 import com.pinboard.demo.service.BoardService;
+import com.pinboard.demo.service.CommentService;
 import com.pinboard.demo.service.PinService;
 import com.pinboard.demo.service.UserService;
 
@@ -39,6 +43,9 @@ public class PinController {
 
   @Autowired
   private UserService userService;
+  
+  @Autowired
+  private CommentService commentService;
 
   // Obtém a instância do Singleton para configurações
   private final ConfigurationManager configManager = ConfigurationManager.getInstance();
@@ -68,9 +75,14 @@ public class PinController {
     Pin pin = pinService.getPin(id);
     if (pin == null) return "redirect:/pins";
 
+    // Carrega os comentários do pin
+    List<Comment> comments = commentService.getCommentsByPin(id);
+    
     model.addAttribute("pin", pin);
     model.addAttribute("pinHtml", pinService.renderPin(pin));
     model.addAttribute("appName", configManager.getAppName());
+    model.addAttribute("comments", comments);
+    model.addAttribute("commentCount", comments.size());
 
     // Verifica se o usuário logado favoritou/salvou/curtiu o pin
     User currentUser = (User) session.getAttribute("currentUser");
@@ -85,7 +97,14 @@ public class PinController {
       boolean isFavorited = userService.hasUserFavoritedPin(currentUser.getId(), id);
       boolean isSaved = userService.hasUserSavedPin(currentUser.getId(), id);
       boolean isLiked = userService.hasUserLikedPin(currentUser.getId(), id);
-
+      
+      // Mapeia quais comentários o usuário curtiu
+      Map<Long, Boolean> likedCommentIds = new HashMap<>();
+      for (Comment comment : comments) {
+        likedCommentIds.put(comment.getId(), comment.isLikedByUser(currentUser));
+      }
+      
+      model.addAttribute("likedCommentIds", likedCommentIds);
       model.addAttribute("isFavorited", isFavorited);
       model.addAttribute("isSaved", isSaved);
       model.addAttribute("isLiked", isLiked);

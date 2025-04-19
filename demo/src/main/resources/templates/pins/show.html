@@ -164,6 +164,96 @@
 
       <div class="row mt-5">
         <div class="col-12">
+          <h3>Comentários <span class="badge bg-secondary" th:text="${commentCount}">0</span></h3>
+          
+          <!-- Formulário de comentários -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form th:if="${session.currentUser != null}" th:action="@{/comments/pin/{id}(id=${pin.id})}" method="post">
+                <div class="mb-3">
+                  <label for="commentContent" class="form-label">Deixe seu comentário</label>
+                  <textarea class="form-control" id="commentContent" name="content" rows="3" required 
+                    placeholder="Compartilhe seus pensamentos sobre este pin..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa fa-comment"></i> Comentar
+                </button>
+              </form>
+              <div th:unless="${session.currentUser != null}" class="text-center py-3">
+                <p class="mb-2">Faça login para deixar um comentário</p>
+                <a th:href="@{/auth/login}" class="btn btn-outline-primary">
+                  <i class="fa fa-sign-in-alt"></i> Login
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Lista de comentários -->
+          <div class="comments-section mb-5">
+            <div th:if="${comments != null && !comments.isEmpty()}">
+              <div th:each="comment : ${comments}" class="card mb-3">
+                <div class="card-body">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0">
+                      <img th:if="${comment.author != null && comment.author.profileImageUrl != null && !comment.author.profileImageUrl.isEmpty()}" 
+                           th:src="${comment.author.profileImageUrl}" 
+                           class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;" alt="Avatar">
+                      <img th:unless="${comment.author != null && comment.author.profileImageUrl != null && !comment.author.profileImageUrl.isEmpty()}" 
+                           th:src="@{/img/default-avatar.png}" 
+                           class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;" alt="Avatar padrão">
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                          <a th:href="@{/profile/{username}(username=${comment.author.username})}" 
+                             class="fw-bold text-decoration-none" th:text="${comment.author.username}">username</a>
+                          <small class="text-muted ms-2" th:text="${#temporals.format(comment.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                          <!-- Botão de curtir comentário -->
+                          <button th:if="${session.currentUser != null}" 
+                                  class="btn btn-sm like-comment-btn me-2" 
+                                  th:classappend="${likedCommentIds != null && likedCommentIds.containsKey(comment.id) && likedCommentIds.get(comment.id)} ? 'text-danger' : 'text-secondary'"
+                                  th:attr="data-comment-id=${comment.id}, data-liked=${likedCommentIds != null && likedCommentIds.containsKey(comment.id) && likedCommentIds.get(comment.id)}">
+                            <i class="fa fa-heart"></i>
+                            <span th:text="${comment.likesCount}">0</span>
+                          </button>
+                          <span th:unless="${session.currentUser != null}" class="text-secondary me-2">
+                            <i class="fa fa-heart"></i>
+                            <span th:text="${comment.likesCount}">0</span>
+                          </span>
+                        
+                          <!-- Botões de editar e excluir comentários -->
+                          <div th:if="${session.currentUser != null && session.currentUser.id == comment.author.id}">
+                            <button class="btn btn-sm btn-link text-primary edit-comment-btn me-2" 
+                                    th:attr="data-comment-id=${comment.id}, data-comment-content=${comment.content}">
+                              <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-danger delete-comment-btn" 
+                                    th:attr="data-comment-id=${comment.id}">
+                              <i class="fa fa-trash"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="mb-0" th:text="${comment.content}">Conteúdo do comentário...</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div th:if="${comments == null || comments.isEmpty()}" class="text-center py-5">
+              <div class="mb-3">
+                <i class="fa fa-comments fa-3x text-muted"></i>
+              </div>
+              <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-12">
           <h3>Pins relacionados</h3>
           <div class="row">
             <!-- Aqui seriam exibidos pins relacionados -->
@@ -247,7 +337,7 @@
       </div>
     </div>
 
-    <!-- JavaScript para as funcionalidades de favoritar e salvar -->
+    <!-- JavaScript para as funcionalidades de favoritar, salvar e excluir comentários -->
     <script th:inline="javascript">
       document.addEventListener('DOMContentLoaded', function () {
         // Botão de favoritar
@@ -317,6 +407,172 @@
               .catch(error => {
                 console.error('Erro:', error);
               });
+          });
+        });
+        
+        // Botão de exclusão de comentários
+        const deleteCommentButtons = document.querySelectorAll('.delete-comment-btn');
+        deleteCommentButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            if (confirm('Tem certeza que deseja excluir este comentário?')) {
+              const commentId = this.getAttribute('data-comment-id');
+              
+              fetch(`/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+              .then(response => {
+                if (response.ok) {
+                  // Remove o comentário do DOM após exclusão bem-sucedida
+                  const commentCard = this.closest('.card');
+                  commentCard.remove();
+                  
+                  // Atualiza o contador de comentários
+                  const commentCountBadge = document.querySelector('h3 .badge');
+                  if (commentCountBadge) {
+                    const currentCount = parseInt(commentCountBadge.textContent);
+                    commentCountBadge.textContent = currentCount - 1;
+                    
+                    // Se não houver mais comentários, exibe a mensagem de "sem comentários"
+                    if (currentCount - 1 === 0) {
+                      const commentsSection = document.querySelector('.comments-section');
+                      commentsSection.innerHTML = `
+                        <div class="text-center py-5">
+                          <div class="mb-3">
+                            <i class="fa fa-comments fa-3x text-muted"></i>
+                          </div>
+                          <p>Ainda não há comentários. Seja o primeiro a comentar!</p>
+                        </div>
+                      `;
+                    }
+                  }
+                } else {
+                  alert('Erro ao excluir o comentário');
+                }
+              })
+              .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao excluir o comentário');
+              });
+            }
+          });
+        });
+
+        // Botões de edição de comentários
+        const editCommentButtons = document.querySelectorAll('.edit-comment-btn');
+        editCommentButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            const currentContent = this.getAttribute('data-comment-content');
+            const commentElement = this.closest('.card-body').querySelector('p');
+            const commentCard = this.closest('.card');
+            
+            // Cria o formulário de edição
+            const form = document.createElement('div');
+            form.innerHTML = `
+              <div class="mt-2 mb-3">
+                <textarea class="form-control edit-comment-textarea" rows="3">${currentContent}</textarea>
+                <div class="d-flex justify-content-end mt-2">
+                  <button type="button" class="btn btn-sm btn-secondary me-2 cancel-edit-btn">
+                    <i class="fa fa-times"></i> Cancelar
+                  </button>
+                  <button type="button" class="btn btn-sm btn-primary save-edit-btn" data-comment-id="${commentId}">
+                    <i class="fa fa-check"></i> Salvar
+                  </button>
+                </div>
+              </div>
+            `;
+            
+            // Esconde o conteúdo original e mostra o formulário de edição
+            commentElement.style.display = 'none';
+            commentElement.insertAdjacentElement('afterend', form);
+            
+            // Manipulador para o botão cancelar
+            form.querySelector('.cancel-edit-btn').addEventListener('click', function() {
+              form.remove();
+              commentElement.style.display = 'block';
+            });
+            
+            // Manipulador para o botão salvar
+            form.querySelector('.save-edit-btn').addEventListener('click', function() {
+              const newContent = form.querySelector('.edit-comment-textarea').value;
+              
+              if (!newContent.trim()) {
+                alert('O comentário não pode estar vazio');
+                return;
+              }
+              
+              // Envia a atualização para o servidor
+              fetch(`/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `content=${encodeURIComponent(newContent)}`
+              })
+              .then(response => {
+                if (response.ok) {
+                  // Atualiza o comentário na interface
+                  commentElement.textContent = newContent;
+                  form.remove();
+                  commentElement.style.display = 'block';
+                  
+                  // Atualiza o atributo data-comment-content do botão de editar
+                  button.setAttribute('data-comment-content', newContent);
+                } else {
+                  response.text().then(text => {
+                    alert(`Erro ao atualizar comentário: ${text}`);
+                  });
+                }
+              })
+              .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao atualizar o comentário');
+              });
+            });
+          });
+        });
+
+        // Botões de curtir comentários
+        const likeCommentButtons = document.querySelectorAll('.like-comment-btn');
+        likeCommentButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const commentId = this.getAttribute('data-comment-id');
+            const isLiked = this.getAttribute('data-liked') === 'true';
+            
+            fetch(`/comments/${commentId}/like`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // Atualiza o ícone e a contagem de likes
+                if (data.liked) {
+                  this.classList.remove('text-secondary');
+                  this.classList.add('text-danger');
+                  this.setAttribute('data-liked', 'true');
+                } else {
+                  this.classList.remove('text-danger');
+                  this.classList.add('text-secondary');
+                  this.setAttribute('data-liked', 'false');
+                }
+                
+                // Atualiza a contagem de likes
+                const likesCountElement = this.querySelector('span');
+                likesCountElement.textContent = data.likesCount;
+              } else {
+                alert(data.message || 'Ocorreu um erro ao curtir o comentário');
+              }
+            })
+            .catch(error => {
+              console.error('Erro:', error);
+              alert('Ocorreu um erro ao curtir o comentário');
+            });
           });
         });
       });
