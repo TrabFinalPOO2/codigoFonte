@@ -96,7 +96,7 @@
           const previewCover = document.getElementById('preview-cover');
           const previewPrivate = document.getElementById('preview-private');
 
-          // Função para atualizar a prévia
+          // Atualiza a prévia do Board para edição
           function updatePreview() {
             previewName.textContent = nameInput.value || 'Nome do Board';
             previewDesc.textContent = descInput.value || 'Descrição do board...';
@@ -107,7 +107,7 @@
             else previewPrivate.classList.add('d-none');
           }
 
-          // Adicionar event listeners
+          // Adiciona event listeners
           nameInput.addEventListener('input', updatePreview);
           descInput.addEventListener('input', updatePreview);
           coverInput.addEventListener('input', updatePreview);

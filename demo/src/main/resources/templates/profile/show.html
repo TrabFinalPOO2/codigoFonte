@@ -1,210 +1,226 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
-      th:replace="~{layouts/main :: body(~{::div.content})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::div.content})}">
+
 <head>
-    <title>Perfil de Usuário</title>
+  <title>Perfil de Usuário</title>
 </head>
+
 <body>
-    <div class="content">
-        <!-- Cabeçalho do perfil -->
-        <div class="row mb-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <!-- Avatar do usuário -->
-                            <div class="col-md-3 text-center">
-                                <img th:if="${profileUser.profileImageUrl}" th:src="${profileUser.profileImageUrl}" 
-                                     class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;"
-                                     alt="Foto de perfil">
-                                <img th:unless="${profileUser.profileImageUrl}" src="https://via.placeholder.com/150" 
-                                     class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;"
-                                     alt="Foto de perfil padrão">
-                            </div>
-                            
-                            <!-- Informações do usuário -->
-                            <div class="col-md-9">
-                                <h2 th:text="${profileUser.username}" class="mb-2">Nome de Usuário</h2>
-                                
-                                <p th:if="${profileUser.bio}" th:text="${profileUser.bio}" class="text-muted mb-3">
-                                    Biografia do usuário
-                                </p>
-                                <p th:unless="${profileUser.bio}" class="text-muted mb-3">
-                                    Sem biografia
-                                </p>
-                                
-                                <div class="d-flex mb-3">
-                                    <div class="me-4">
-                                        <strong th:text="${profileUser.boards.size()}">0</strong> boards
-                                    </div>
-                                    <div class="me-4">
-                                        <strong th:text="${profileUser.pins.size()}">0</strong> pins
-                                    </div>
-                                    <div class="me-4">
-                                        <strong th:text="${profileUser.followers.size()}">0</strong> seguidores
-                                    </div>
-                                    <div>
-                                        <strong th:text="${profileUser.following.size()}">0</strong> seguindo
-                                    </div>
-                                </div>
-                                
-                                <!-- Botão de seguir (se não for o próprio perfil) -->
-                                <div th:if="${!isOwnProfile}" class="mt-2">
-                                    <form th:action="@{/profile/follow/{username}(username=${profileUser.username})}" method="post">
-                                        <button type="submit" class="btn btn-sm" 
-                                                th:classappend="${isFollowing ? 'btn-outline-danger' : 'btn-primary'}">
-                                            <i class="fa" th:classappend="${isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
-                                            <span th:text="${isFollowing ? 'Deixar de seguir' : 'Seguir'}">Seguir</span>
-                                        </button>
-                                    </form>
-                                </div>
-                                
-                                <!-- Botão de editar (se for o próprio perfil) -->
-                                <div th:if="${isOwnProfile}" class="mt-2">
-                                    <a href="#" class="btn btn-sm btn-outline-primary">
-                                        <i class="fa fa-edit"></i> Editar perfil
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <div class="content">
+    <!-- Cabeçalho do perfil -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <!-- Avatar do usuário -->
+              <div class="col-md-3 text-center">
+                <img th:if="${profileUser.profileImageUrl != null && !profileUser.profileImageUrl.isEmpty()}" th:src="${profileUser.profileImageUrl}"
+                  class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;"
+                  alt="Foto de perfil">
+                <img th:unless="${profileUser.profileImageUrl != null && !profileUser.profileImageUrl.isEmpty()}" th:src="@{/img/default-avatar.png}"
+                  class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;"
+                  alt="Foto de perfil padrão">
+              </div>
+
+              <!-- Informações do usuário -->
+              <div class="col-md-9">
+                <h2 th:text="${profileUser.username}" class="mb-2">Nome de Usuário</h2>
+
+                <p th:if="${profileUser.bio}" th:text="${profileUser.bio}" class="text-muted mb-3">
+                  Biografia do usuário
+                </p>
+                <p th:unless="${profileUser.bio}" class="text-muted mb-3">
+                  Sem biografia
+                </p>
+
+                <div class="d-flex mb-3">
+                  <div class="me-4">
+                    <strong th:text="${profileUser.boards.size()}">0</strong> boards
+                  </div>
+                  <div class="me-4">
+                    <strong th:text="${profileUser.pins.size()}">0</strong> pins
+                  </div>
+                  <div class="me-4">
+                    <strong th:text="${profileUser.followers.size()}">0</strong> seguidores
+                  </div>
+                  <div>
+                    <strong th:text="${profileUser.following.size()}">0</strong> seguindo
+                  </div>
                 </div>
+
+                <!-- Botão de seguir (se não for o próprio perfil) -->
+                <div th:if="${!isOwnProfile}" class="mt-2">
+                  <form th:action="@{/profile/follow/{username}(username=${profileUser.username})}" method="post">
+                    <button type="submit" class="btn btn-sm"
+                      th:classappend="${isFollowing ? 'btn-outline-danger' : 'btn-primary'}">
+                      <i class="fa" th:classappend="${isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
+                      <span th:text="${isFollowing ? 'Deixar de seguir' : 'Seguir'}">Seguir</span>
+                    </button>
+                  </form>
+                </div>
+
+                <!-- Botão de editar (se for o próprio perfil) -->
+                <div th:if="${isOwnProfile}" class="mt-2">
+                  <a th:href="@{/profile/edit}" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-edit"></i> Editar perfil
+                  </a>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-        
-        <!-- Guias de navegação -->
-        <ul class="nav nav-tabs mb-4">
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'pins' ? 'active' : ''}" 
-                   th:href="@{/profile/{username}(username=${profileUser.username})}">
-                    <i class="fa fa-thumbtack"></i> Pins
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'saved' ? 'active' : ''}" 
-                   th:href="@{/profile/{username}/saved(username=${profileUser.username})}">
-                    <i class="fa fa-bookmark"></i> Salvos
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'favorites' ? 'active' : ''}" 
-                   th:href="@{/profile/{username}/favorites(username=${profileUser.username})}">
-                    <i class="fa fa-heart"></i> Favoritos
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:classappend="${activeTab == 'boards' ? 'active' : ''}" 
-                   th:href="@{/profile/{username}/boards(username=${profileUser.username})}">
-                    <i class="fa fa-th-large"></i> Boards
-                </a>
-            </li>
-        </ul>
-        
-        <!-- Conteúdo das guias -->
-        <div class="tab-content">
-            <!-- Pins criados pelo usuário -->
-            <div th:if="${activeTab == 'pins'}" class="tab-pane fade show active">
-                <div class="row" th:if="${!profileUser.pins.isEmpty()}">
-                    <div class="col-md-4 mb-4" th:each="pin : ${profileUser.pins}">
-                        <div class="card h-100">
-                            <a th:href="@{/pins/{id}(id=${pin.id})}">
-                                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Pin Image">
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin</p>
-                            </div>
-                            <div class="card-footer">
-                                <small class="text-muted">
-                                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-info text-center" th:if="${profileUser.pins.isEmpty()}">
-                    <i class="fa fa-info-circle"></i> Nenhum pin criado ainda.
-                </div>
-            </div>
-            
-            <!-- Pins salvos pelo usuário -->
-            <div th:if="${activeTab == 'saved'}" class="tab-pane fade show active">
-                <div class="row" th:if="${!profileUser.savedPins.isEmpty()}">
-                    <div class="col-md-4 mb-4" th:each="pin : ${profileUser.savedPins}">
-                        <div class="card h-100">
-                            <a th:href="@{/pins/{id}(id=${pin.id})}">
-                                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Pin Image">
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin</p>
-                            </div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
-                                </small>
-                                <small>
-                                    <span th:text="${pin.creator.username}">Usuário</span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-info text-center" th:if="${profileUser.savedPins.isEmpty()}">
-                    <i class="fa fa-info-circle"></i> Nenhum pin salvo ainda.
-                </div>
-            </div>
-            
-            <!-- Pins favoritados pelo usuário -->
-            <div th:if="${activeTab == 'favorites'}" class="tab-pane fade show active">
-                <div class="row" th:if="${!profileUser.favoritePins.isEmpty()}">
-                    <div class="col-md-4 mb-4" th:each="pin : ${profileUser.favoritePins}">
-                        <div class="card h-100">
-                            <a th:href="@{/pins/{id}(id=${pin.id})}">
-                                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Pin Image">
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin</p>
-                            </div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
-                                </small>
-                                <small>
-                                    <span th:text="${pin.creator.username}">Usuário</span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-info text-center" th:if="${profileUser.favoritePins.isEmpty()}">
-                    <i class="fa fa-info-circle"></i> Nenhum pin favoritado ainda.
-                </div>
-            </div>
-            
-            <!-- Boards criados pelo usuário -->
-            <div th:if="${activeTab == 'boards'}" class="tab-pane fade show active">
-                <div class="row" th:if="${!profileUser.boards.isEmpty()}">
-                    <div class="col-md-4 mb-4" th:each="board : ${profileUser.boards}">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${board.name}">Nome do Board</h5>
-                                <p class="card-text text-muted" th:text="${board.description}">Descrição do Board</p>
-                            </div>
-                            <div class="card-footer">
-                                <small class="text-muted">
-                                    <i class="fa fa-thumbtack"></i> <span th:text="${board.pins.size()}">0</span> pins
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="alert alert-info text-center" th:if="${profileUser.boards.isEmpty()}">
-                    <i class="fa fa-info-circle"></i> Nenhum board criado ainda.
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+
+    <!-- Guias de navegação -->
+    <ul class="nav nav-tabs mb-4">
+      <li class="nav-item">
+        <a class="nav-link" th:classappend="${activeTab == 'pins' ? 'active' : ''}"
+          th:href="@{/profile/{username}(username=${profileUser.username})}">
+          <i class="fa fa-thumbtack"></i> Pins
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:classappend="${activeTab == 'saved' ? 'active' : ''}"
+          th:href="@{/profile/{username}(username=${profileUser.username}, tab='saved')}">
+          <i class="fa fa-bookmark"></i> Salvos
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:classappend="${activeTab == 'favorites' ? 'active' : ''}"
+          th:href="@{/profile/{username}(username=${profileUser.username}, tab='favorites')}">
+          <i class="fa fa-heart"></i> Favoritos
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" th:classappend="${activeTab == 'boards' ? 'active' : ''}"
+          th:href="@{/profile/{username}(username=${profileUser.username}, tab='boards')}">
+          <i class="fa fa-th-large"></i> Boards
+        </a>
+      </li>
+    </ul>
+
+    <!-- Conteúdo das guias -->
+    <div class="tab-content">
+      <!-- Pins criados pelo usuário -->
+      <div th:if="${activeTab == 'pins'}" class="tab-pane fade show active">
+        <div class="row" th:if="${!profileUser.pins.isEmpty()}">
+          <div class="col-md-4 mb-4" th:each="pin : ${profileUser.pins}">
+            <div class="card h-100">
+              <a th:href="@{/pins/{id}(id=${pin.id})}">
+                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;"
+                  alt="Pin Image">
+              </a>
+              <div class="card-body">
+                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin
+                </p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">
+                  <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info text-center" th:if="${profileUser.pins.isEmpty()}">
+          <i class="fa fa-info-circle"></i> Nenhum pin criado ainda.
+        </div>
+      </div>
+
+      <!-- Pins salvos pelo usuário -->
+      <div th:if="${activeTab == 'saved'}" class="tab-pane fade show active">
+        <div class="row" th:if="${!profileUser.savedPins.isEmpty()}">
+          <div class="col-md-4 mb-4" th:each="pin : ${profileUser.savedPins}">
+            <div class="card h-100">
+              <a th:href="@{/pins/{id}(id=${pin.id})}">
+                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;"
+                  alt="Pin Image">
+              </a>
+              <div class="card-body">
+                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin
+                </p>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                  <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
+                </small>
+                <small>
+                  <span th:text="${pin.creator.username}">Usuário</span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info text-center" th:if="${profileUser.savedPins.isEmpty()}">
+          <i class="fa fa-info-circle"></i> Nenhum pin salvo ainda.
+        </div>
+      </div>
+
+      <!-- Pins favoritados pelo usuário -->
+      <div th:if="${activeTab == 'favorites'}" class="tab-pane fade show active">
+        <div class="row" th:if="${!profileUser.favoritePins.isEmpty()}">
+          <div class="col-md-4 mb-4" th:each="pin : ${profileUser.favoritePins}">
+            <div class="card h-100">
+              <a th:href="@{/pins/{id}(id=${pin.id})}">
+                <img th:src="${pin.imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;"
+                  alt="Pin Image">
+              </a>
+              <div class="card-body">
+                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                <p class="card-text text-muted" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do Pin
+                </p>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                  <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> curtidas
+                </small>
+                <small>
+                  <span th:text="${pin.creator.username}">Usuário</span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info text-center" th:if="${profileUser.favoritePins.isEmpty()}">
+          <i class="fa fa-info-circle"></i> Nenhum pin favoritado ainda.
+        </div>
+      </div>
+
+      <!-- Boards criados pelo usuário -->
+      <div th:if="${activeTab == 'boards'}" class="tab-pane fade show active">
+        <div class="row" th:if="${!profileUser.boards.isEmpty()}">
+          <div class="col-md-4 mb-4" th:each="board : ${profileUser.boards}">
+            <div class="card h-100">
+              <a th:href="@{/boards/{id}(id=${board.id})}">
+                <img th:if="${board.coverImageUrl != null && !board.coverImageUrl.isEmpty()}" 
+                     th:src="${board.coverImageUrl}" class="card-img-top" 
+                     style="height: 150px; object-fit: cover;" alt="Board Image">
+                <img th:unless="${board.coverImageUrl != null && !board.coverImageUrl.isEmpty()}" 
+                     src="https://via.placeholder.com/400x150?text=Sem+imagem+de+capa" 
+                     class="card-img-top" style="height: 150px; object-fit: cover;" alt="Sem imagem de capa">
+              </a>
+              <div class="card-body">
+                <h5 class="card-title" th:text="${board.name}">Nome do Board</h5>
+                <p class="card-text text-muted" th:text="${board.description}">Descrição do Board</p>
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">
+                  <i class="fa fa-thumbtack"></i> <span th:text="${board.pins.size()}">0</span> pins
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-info text-center" th:if="${profileUser.boards.isEmpty()}">
+          <i class="fa fa-info-circle"></i> Nenhum board criado ainda.
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

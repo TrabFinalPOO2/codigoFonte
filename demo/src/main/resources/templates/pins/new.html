@@ -94,7 +94,7 @@
           const previewImage = document.getElementById('preview-image');
           const previewFeatured = document.getElementById('preview-featured');
 
-          // Função para atualizar a prévia
+          // Atualiza a prévia do novo Pin
           function updatePreview() {
             previewTitle.textContent = titleInput.value || 'Título do Pin';
             previewDesc.textContent = descInput.value || 'Descrição do pin...';
@@ -105,7 +105,7 @@
             else previewFeatured.classList.add('d-none');
           }
 
-          // Adicionar event listeners
+          // Adiciona event listeners
           titleInput.addEventListener('input', updatePreview);
           descInput.addEventListener('input', updatePreview);
           imageInput.addEventListener('input', updatePreview);

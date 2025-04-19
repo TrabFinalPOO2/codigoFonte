@@ -19,13 +19,16 @@
 
         <div class="mb-4">
           <div class="btn-group" role="group" aria-label="Layouts">
-            <a th:href="@{/boards?layout=grid}" class="btn btn-outline-secondary">
+            <a th:href="@{/boards?layout=grid}" class="btn btn-outline-secondary" 
+               th:classappend="${currentLayout == 'grid' || currentLayout == null ? 'active' : ''}">
               <i class="fa fa-th"></i> Grade
             </a>
-            <a th:href="@{/boards?layout=masonry}" class="btn btn-outline-secondary">
+            <a th:href="@{/boards?layout=masonry}" class="btn btn-outline-secondary"
+               th:classappend="${currentLayout == 'masonry' ? 'active' : ''}">
               <i class="fa fa-th-large"></i> Cascata
             </a>
-            <a th:href="@{/boards?layout=list}" class="btn btn-outline-secondary">
+            <a th:href="@{/boards?layout=list}" class="btn btn-outline-secondary"
+               th:classappend="${currentLayout == 'list' ? 'active' : ''}">
               <i class="fa fa-list"></i> Lista
             </a>
           </div>
@@ -35,35 +38,9 @@
           </span>
         </div>
 
-        <div class="row g-4" th:if="${!#lists.isEmpty(boards)}">
-          <div class="col-md-4" th:each="board : ${boards}">
-            <div class="card board-card h-100 shadow-sm">
-              <img th:src="${board.coverImageUrl}" class="card-img-top" alt="Board Cover"
-                src="https://via.placeholder.com/400x200">
-              <div class="card-body">
-                <h5 class="card-title" th:text="${board.name}">Nome do Board</h5>
-                <p class="card-text" th:text="${board.description}">Descrição do board...</p>
-                <div class="d-flex align-items-center mb-2">
-                  <img src="https://via.placeholder.com/24" class="rounded-circle me-1" alt="Avatar">
-                  <small class="text-muted"
-                    th:text="${board.owner != null ? board.owner.username : 'Anônimo'}">Usuário</small>
-                  <small class="ms-auto text-muted">
-                    <i class="fa fa-thumbtack"></i> <span th:text="${board.pins.size()}">0</span>
-                    pins
-                  </small>
-                </div>
-              </div>
-              <div class="card-footer">
-                <a th:href="@{/boards/{id}(id=${board.id})}" class="btn btn-sm btn-primary">
-                  <i class="fa fa-eye"></i> Ver Board
-                </a>
-                <a th:if="${board.owner != null}" th:href="@{/boards/{id}/edit(id=${board.id})}"
-                  class="btn btn-sm btn-outline-secondary">
-                  <i class="fa fa-edit"></i> Editar
-                </a>
-              </div>
-            </div>
-          </div>
+        <!-- HTML gerado pela Factory incluindo o conteúdo dos boards -->
+        <div th:if="${!#lists.isEmpty(boards)}" th:utext="${boardsListHtml}">
+          <!-- Layout HTML gerado pela Factory será inserido aqui -->
         </div>
 
         <div class="alert alert-info" th:if="${#lists.isEmpty(boards)}">
@@ -83,11 +60,15 @@
             <div class="alert alert-secondary">
               <p><strong>Componentes do Padrão Factory implementados:</strong></p>
               <ul>
-                <li><strong>PinLayout (interface):</strong> Define os métodos que todos os layouts devem
+                <li><strong>PinLayout (interface):</strong> Define os métodos que todos os layouts de pins devem
+                  implementar</li>
+                <li><strong>BoardLayout (interface):</strong> Define os métodos que todos os layouts de boards devem
                   implementar</li>
                 <li><strong>GridLayout, ListLayout, MasonryLayout:</strong> Implementações concretas de
-                  layouts</li>
-                <li><strong>LayoutFactory:</strong> Factory que cria instâncias dos layouts conforme
+                  layouts para pins</li>
+                <li><strong>BoardGridLayout, BoardListLayout, BoardMasonryLayout:</strong> Implementações concretas de
+                  layouts para boards</li>
+                <li><strong>LayoutFactory, BoardLayoutFactory:</strong> Factories que criam instâncias dos layouts conforme
                   solicitado</li>
               </ul>
             </div>

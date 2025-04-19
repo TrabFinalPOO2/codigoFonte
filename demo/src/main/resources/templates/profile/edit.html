@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::div.content})}">
+
+<head>
+  <title>Editar Perfil</title>
+</head>
+
+<body>
+  <div class="content">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0 text-center">Editar Perfil</h3>
+          </div>
+          <div class="card-body p-4">
+            <!-- Mensagens de alerta -->
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+              <i class="fa fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
+            <div th:if="${success}" class="alert alert-success" role="alert">
+              <i class="fa fa-check-circle"></i> <span th:text="${success}"></span>
+            </div>
+
+            <!-- Formulário de edição de perfil -->
+            <form th:action="@{/profile/update}" th:object="${user}" method="post">
+              <input type="hidden" th:field="*{id}">
+              
+              <div class="mb-3">
+                <label for="username" class="form-label">Nome de usuário</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa fa-user"></i></span>
+                  <input type="text" class="form-control" id="username" th:field="*{username}"
+                    placeholder="Nome de usuário" required>
+                </div>
+                <small class="text-muted">Seu nome de usuário será visível para outros usuários.</small>
+              </div>
+
+              <div class="mb-3">
+                <label for="bio" class="form-label">Sobre você</label>
+                <textarea class="form-control" id="bio" th:field="*{bio}" placeholder="Conte um pouco sobre você..."
+                  rows="3"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="profileImageUrl" class="form-label">URL da imagem de perfil</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa fa-image"></i></span>
+                  <input type="url" class="form-control" id="profileImageUrl" th:field="*{profileImageUrl}"
+                    placeholder="https://exemplo.com/sua-imagem.jpg">
+                </div>
+                <small class="text-muted">Cole a URL de uma imagem para usar como seu avatar.</small>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-6">
+                  <a th:href="@{/profile}" class="btn btn-outline-secondary w-100">
+                    <i class="fa fa-arrow-left"></i> Cancelar
+                  </a>
+                </div>
+                <div class="col-6">
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa fa-save"></i> Salvar Alterações
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="d-flex justify-content-center">
+              <a th:href="@{/profile/change-password}" class="text-decoration-none text-danger">
+                <i class="fa fa-lock"></i> Alterar senha
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Prévia do perfil -->
+        <div class="card shadow mt-4">
+          <div class="card-header bg-white">
+            <h5 class="mb-0">Prévia do Perfil</h5>
+          </div>
+          <div class="card-body text-center">
+            <img id="profile-preview" th:src="${user.profileImageUrl != null ? user.profileImageUrl : 'https://via.placeholder.com/150'}" 
+                 class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;" alt="Prévia do perfil">
+            <h5 id="username-preview" th:text="${user.username}">Nome de Usuário</h5>
+            <p id="bio-preview" class="text-muted" th:text="${user.bio != null ? user.bio : 'Sem biografia'}">Biografia do usuário</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Script para atualizar a prévia -->
+    <script th:inline="javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        const usernameInput = document.getElementById('username');
+        const bioInput = document.getElementById('bio');
+        const imageUrlInput = document.getElementById('profileImageUrl');
+        
+        const usernamePreview = document.getElementById('username-preview');
+        const bioPreview = document.getElementById('bio-preview');
+        const imagePreview = document.getElementById('profile-preview');
+        
+        function updatePreview() {
+          usernamePreview.textContent = usernameInput.value || 'Nome de Usuário';
+          bioPreview.textContent = bioInput.value || 'Sem biografia';
+          
+          if (imageUrlInput.value) imagePreview.src = imageUrlInput.value;
+        }
+        
+        usernameInput.addEventListener('input', updatePreview);
+        bioInput.addEventListener('input', updatePreview);
+        imageUrlInput.addEventListener('input', updatePreview);
+      });
+    </script>
+  </div>
+</body>
+
+</html>

@@ -10,7 +10,7 @@ import com.pinboard.demo.model.User;
 
 @Repository
 public interface PinRepository extends JpaRepository<Pin, Long> {
-    List<Pin> findByCreator(User creator);
-    List<Pin> findByFeaturedTrue();
-    List<Pin> findByTitleContainingIgnoreCase(String keyword);
+  List<Pin> findByCreator(User creator);
+  List<Pin> findByFeaturedTrue();
+  List<Pin> findByTitleContainingIgnoreCase(String keyword);
 }

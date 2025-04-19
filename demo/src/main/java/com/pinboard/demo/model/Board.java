@@ -24,53 +24,53 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    private String name;
-    
-    private String description;
-    
-    private LocalDateTime createdAt;
-    
-    private String coverImageUrl;
-    
-    private boolean isPrivate;
-    
-    @ManyToOne
-    private User owner;
-    
-    @ManyToMany(mappedBy = "boards")
-    @ToString.Exclude // Excluímos pins do ToString para evitar recursão
-    private Set<Pin> pins = new HashSet<>();
-    
-    // Método para adicionar um pin ao board
-    public void addPin(Pin pin) {
-        this.pins.add(pin);
-        pin.getBoards().add(this);
-    }
-    
-    // Método para remover um pin do board
-    public void removePin(Pin pin) {
-        this.pins.remove(pin);
-        pin.getBoards().remove(this);
-    }
-    
-    // Override do método equals para evitar recursão infinita
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Board board = (Board) o;
-        return id != null && Objects.equals(id, board.id);
-    }
-    
-    // Override do método hashCode para evitar recursão infinita
-    @Override
-    public int hashCode() {
-        // Usamos um valor constante para entidades não persistidas
-        return id == null ? 31 : Objects.hash(id);
-    }
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String name;
+
+  private String description;
+
+  private LocalDateTime createdAt;
+
+  private String coverImageUrl;
+
+  private boolean isPrivate;
+
+  @ManyToOne
+  private User owner;
+
+  @ManyToMany(mappedBy = "boards")
+  @ToString.Exclude // Exclui pins do ToString para evitar recursão
+  private Set<Pin> pins = new HashSet<>();
+
+  // Método para adicionar um pin ao board
+  public void addPin(Pin pin) {
+    this.pins.add(pin);
+    pin.getBoards().add(this);
+  }
+
+  // Método para remover um pin do board
+  public void removePin(Pin pin) {
+    this.pins.remove(pin);
+    pin.getBoards().remove(this);
+  }
+
+  // Override do método equals para evitar recursão infinita
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Board board = (Board) o;
+    return id != null && Objects.equals(id, board.id);
+  }
+
+  // Override do método hashCode para evitar recursão infinita
+  @Override
+  public int hashCode() {
+    // Usa um valor constante para entidades não persistidas
+    return id == null ? 31 : Objects.hash(id);
+  }
 }

@@ -10,7 +10,7 @@ import com.pinboard.demo.model.User;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
-    List<Board> findByOwner(User owner);
-    List<Board> findByIsPrivateFalse();
-    List<Board> findByNameContainingIgnoreCase(String keyword);
+  List<Board> findByOwner(User owner);
+  List<Board> findByIsPrivateFalse();
+  List<Board> findByNameContainingIgnoreCase(String keyword);
 }

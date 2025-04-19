@@ -97,7 +97,12 @@
 
                   <!-- Informações do autor -->
                   <div class="pin-author">
-                    <img src="https://via.placeholder.com/30" class="author-avatar rounded-circle" alt="Avatar">
+                    <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                         th:src="${pin.creator.profileImageUrl}" 
+                         class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar">
+                    <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                         th:src="@{/img/default-avatar.png}" 
+                         class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar padrão">
                     <span class="author-name"
                       th:text="${pin.creator != null ? pin.creator.username : 'Anônimo'}">Usuário</span>
                   </div>
