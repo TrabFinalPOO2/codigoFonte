@@ -6,11 +6,11 @@ package com.pinboard.demo.pattern.factory;
 public class BoardLayoutFactory {
 
   public static BoardLayout createLayout(String type) {
-    switch (type.toLowerCase()) {
-      case "grid": return new BoardGridLayout();
-      case "list": return new BoardListLayout();
-      case "masonry": return new BoardMasonryLayout();
-      default: return new BoardGridLayout(); // Layout padrão
-    }
+    return switch (type.toLowerCase()) {
+      case "grid" -> new BoardGridLayout();
+      case "list" -> new BoardListLayout();
+      case "masonry" -> new BoardMasonryLayout();
+      default -> new BoardGridLayout(); // Layout padrão
+    };
   }
 }

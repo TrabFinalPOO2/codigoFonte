@@ -53,11 +53,11 @@ public class BoardService {
   public Board updateBoard(Board board) {
     Board existingBoard = boardRepository.findById(board.getId()).orElse(null);
     if (existingBoard != null) {
-        existingBoard.setName(board.getName());
-        existingBoard.setDescription(board.getDescription());
-        existingBoard.setPrivate(board.isPrivate());
-        existingBoard.setCoverImageUrl(board.getCoverImageUrl());
-        return boardRepository.save(existingBoard);
+      existingBoard.setName(board.getName());
+      existingBoard.setDescription(board.getDescription());
+      existingBoard.setPrivate(board.isPrivate());
+      existingBoard.setCoverImageUrl(board.getCoverImageUrl());
+      return boardRepository.save(existingBoard);
     }
     return null;
   }

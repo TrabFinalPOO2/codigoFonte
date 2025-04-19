@@ -43,10 +43,9 @@ public class ProfileController {
   @GetMapping("/{username}")
   @Transactional
   public String viewUserProfile(@PathVariable String username,
-      @RequestParam(required = false) String tab,
-      HttpSession session,
-      Model model) {
-
+                                @RequestParam(required = false) String tab,
+                                HttpSession session,
+                                Model model) {
     Optional<User> userOpt = userService.getUserByUsername(username);
     if (userOpt.isEmpty()) return "error/404";
 
@@ -64,19 +63,16 @@ public class ProfileController {
     // Adiciona informações para a aba ativa baseada no parâmetro tab
     if (tab != null) {
       switch (tab) {
-        case "saved":
+        case "saved" -> {
           model.addAttribute("activeTab", "saved");
           user.getSavedPins().size(); // Carrega explicitamente a coleção
-          break;
-        case "favorites":
+        }
+        case "favorites" -> {
           model.addAttribute("activeTab", "favorites");
           user.getFavoritePins().size(); // Carrega explicitamente a coleção
-          break;
-        case "boards":
-          model.addAttribute("activeTab", "boards");
-          break;
-        default:
-          model.addAttribute("activeTab", "pins");
+        }
+        case "boards" -> model.addAttribute("activeTab", "boards");
+        default -> model.addAttribute("activeTab", "pins");
       }
     } else model.addAttribute("activeTab", "pins");
 

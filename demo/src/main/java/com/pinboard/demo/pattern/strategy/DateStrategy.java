@@ -14,9 +14,7 @@ public class DateStrategy implements SortingStrategy {
   public <T> List<T> sort(List<T> items) {
     return items.stream()
         .sorted((o1, o2) -> {
-          if (o1 instanceof Pin && o2 instanceof Pin) {
-            return ((Pin) o2).getCreatedAt().compareTo(((Pin) o1).getCreatedAt());
-          }
+          if (o1 instanceof Pin && o2 instanceof Pin) return ((Pin) o2).getCreatedAt().compareTo(((Pin) o1).getCreatedAt());
           return 0;
         })
         .collect(Collectors.toList());

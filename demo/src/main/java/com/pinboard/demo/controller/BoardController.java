@@ -56,8 +56,7 @@ public class BoardController {
   }
 
   @GetMapping("/{id}")
-  public String getBoard(@PathVariable Long id, @RequestParam(required = false) String layout, Model model,
-      HttpSession session) {
+  public String getBoard(@PathVariable Long id, @RequestParam(required = false) String layout, Model model, HttpSession session) {
     Board board = boardService.getBoard(id);
     if (board == null) return "redirect:/boards";
 
