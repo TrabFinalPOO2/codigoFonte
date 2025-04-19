@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::section})}">
 
 <head>
   <meta charset="UTF-8">
@@ -7,76 +7,74 @@
 </head>
 
 <body>
-  <div th:replace="~{layouts/main :: body(content=~{::section})}">
-    <section>
-      <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h1>Boards</h1>
-          <a th:href="@{/boards/new}" class="btn btn-danger">
-            <i class="fa fa-plus-circle"></i> Novo Board
+  <section>
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Boards</h1>
+        <a th:href="@{/boards/new}" class="btn btn-danger">
+          <i class="fa fa-plus-circle"></i> Novo Board
+        </a>
+      </div>
+
+      <div class="mb-4">
+        <div class="btn-group" role="group" aria-label="Layouts">
+          <a th:href="@{/boards?layout=grid}" class="btn btn-outline-secondary" 
+             th:classappend="${currentLayout == 'grid' || currentLayout == null ? 'active' : ''}">
+            <i class="fa fa-th"></i> Grade
+          </a>
+          <a th:href="@{/boards?layout=masonry}" class="btn btn-outline-secondary"
+             th:classappend="${currentLayout == 'masonry' ? 'active' : ''}">
+            <i class="fa fa-th-large"></i> Cascata
+          </a>
+          <a th:href="@{/boards?layout=list}" class="btn btn-outline-secondary"
+             th:classappend="${currentLayout == 'list' ? 'active' : ''}">
+            <i class="fa fa-list"></i> Lista
           </a>
         </div>
+        <span class="ms-3 text-muted">
+          <i class="fa fa-info-circle"></i> Exemplos de uso do padrão Factory para criar diferentes
+          layouts
+        </span>
+      </div>
 
-        <div class="mb-4">
-          <div class="btn-group" role="group" aria-label="Layouts">
-            <a th:href="@{/boards?layout=grid}" class="btn btn-outline-secondary" 
-               th:classappend="${currentLayout == 'grid' || currentLayout == null ? 'active' : ''}">
-              <i class="fa fa-th"></i> Grade
-            </a>
-            <a th:href="@{/boards?layout=masonry}" class="btn btn-outline-secondary"
-               th:classappend="${currentLayout == 'masonry' ? 'active' : ''}">
-              <i class="fa fa-th-large"></i> Cascata
-            </a>
-            <a th:href="@{/boards?layout=list}" class="btn btn-outline-secondary"
-               th:classappend="${currentLayout == 'list' ? 'active' : ''}">
-              <i class="fa fa-list"></i> Lista
-            </a>
-          </div>
-          <span class="ms-3 text-muted">
-            <i class="fa fa-info-circle"></i> Exemplos de uso do padrão Factory para criar diferentes
-            layouts
-          </span>
+      <!-- HTML gerado pela Factory incluindo o conteúdo dos boards -->
+      <div th:if="${!#lists.isEmpty(boards)}" th:utext="${boardsListHtml}">
+        <!-- Layout HTML gerado pela Factory será inserido aqui -->
+      </div>
+
+      <div class="alert alert-info" th:if="${#lists.isEmpty(boards)}">
+        <i class="fa fa-info-circle"></i> Nenhum board encontrado. <a th:href="@{/boards/new}" class="alert-link">Crie
+          o primeiro board!</a>
+      </div>
+
+      <div class="card mt-5">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Sobre o Padrão Factory</h5>
         </div>
-
-        <!-- HTML gerado pela Factory incluindo o conteúdo dos boards -->
-        <div th:if="${!#lists.isEmpty(boards)}" th:utext="${boardsListHtml}">
-          <!-- Layout HTML gerado pela Factory será inserido aqui -->
-        </div>
-
-        <div class="alert alert-info" th:if="${#lists.isEmpty(boards)}">
-          <i class="fa fa-info-circle"></i> Nenhum board encontrado. <a th:href="@{/boards/new}" class="alert-link">Crie
-            o primeiro board!</a>
-        </div>
-
-        <div class="card mt-5">
-          <div class="card-header bg-light">
-            <h5 class="mb-0">Sobre o Padrão Factory</h5>
-          </div>
-          <div class="card-body">
-            <p>O padrão Factory fornece uma interface para criar objetos em uma superclasse, mas permite que
-              as subclasses alterem o tipo de objetos que serão criados.</p>
-            <p>Nesta aplicação, o <code>LayoutFactory</code> é responsável por criar diferentes layouts
-              (Grid, List e Masonry) para exibição dos pins nos boards.</p>
-            <div class="alert alert-secondary">
-              <p><strong>Componentes do Padrão Factory implementados:</strong></p>
-              <ul>
-                <li><strong>PinLayout (interface):</strong> Define os métodos que todos os layouts de pins devem
-                  implementar</li>
-                <li><strong>BoardLayout (interface):</strong> Define os métodos que todos os layouts de boards devem
-                  implementar</li>
-                <li><strong>GridLayout, ListLayout, MasonryLayout:</strong> Implementações concretas de
-                  layouts para pins</li>
-                <li><strong>BoardGridLayout, BoardListLayout, BoardMasonryLayout:</strong> Implementações concretas de
-                  layouts para boards</li>
-                <li><strong>LayoutFactory, BoardLayoutFactory:</strong> Factories que criam instâncias dos layouts conforme
-                  solicitado</li>
-              </ul>
-            </div>
+        <div class="card-body">
+          <p>O padrão Factory fornece uma interface para criar objetos em uma superclasse, mas permite que
+            as subclasses alterem o tipo de objetos que serão criados.</p>
+          <p>Nesta aplicação, o <code>LayoutFactory</code> é responsável por criar diferentes layouts
+            (Grid, List e Masonry) para exibição dos pins nos boards.</p>
+          <div class="alert alert-secondary">
+            <p><strong>Componentes do Padrão Factory implementados:</strong></p>
+            <ul>
+              <li><strong>PinLayout (interface):</strong> Define os métodos que todos os layouts de pins devem
+                implementar</li>
+              <li><strong>BoardLayout (interface):</strong> Define os métodos que todos os layouts de boards devem
+                implementar</li>
+              <li><strong>GridLayout, ListLayout, MasonryLayout:</strong> Implementações concretas de
+                layouts para pins</li>
+              <li><strong>BoardGridLayout, BoardListLayout, BoardMasonryLayout:</strong> Implementações concretas de
+                layouts para boards</li>
+              <li><strong>LayoutFactory, BoardLayoutFactory:</strong> Factories que criam instâncias dos layouts conforme
+                solicitado</li>
+            </ul>
           </div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+  </section>
 </body>
 
 </html>

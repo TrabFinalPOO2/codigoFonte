@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layouts/main :: body(~{::section})}">
 
 <head>
   <meta charset="UTF-8">
@@ -7,74 +7,72 @@
 </head>
 
 <body>
-  <div th:replace="~{layouts/main :: body(content=~{::section})}">
-    <section>
-      <div class="container">
-        <nav aria-label="breadcrumb" class="mb-4">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/boards}">Boards</a></li>
-            <li class="breadcrumb-item"><a th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.name}">Board</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Editar</li>
-          </ol>
-        </nav>
+  <section>
+    <div class="container">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+          <li class="breadcrumb-item"><a th:href="@{/boards}">Boards</a></li>
+          <li class="breadcrumb-item"><a th:href="@{/boards/{id}(id=${board.id})}" th:text="${board.name}">Board</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Editar</li>
+        </ol>
+      </nav>
 
-        <div class="row justify-content-center">
-          <div class="col-md-8">
-            <div class="card shadow">
-              <div class="card-header bg-white">
-                <h2 class="card-title h4 mb-0">Editar Board</h2>
-              </div>
-              <div class="card-body">
-                <form th:action="@{/boards/{id}(id=${board.id})}" th:object="${board}" method="post">
-                  <input type="hidden" th:field="*{id}">
-                  <div class="mb-3">
-                    <label for="name" class="form-label">Nome</label>
-                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card shadow">
+            <div class="card-header bg-white">
+              <h2 class="card-title h4 mb-0">Editar Board</h2>
+            </div>
+            <div class="card-body">
+              <form th:action="@{/boards/{id}(id=${board.id})}" th:object="${board}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="mb-3">
+                  <label for="name" class="form-label">Nome</label>
+                  <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Descrição</label>
+                  <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="coverImageUrl" class="form-label">URL da Imagem de Capa</label>
+                  <input type="url" class="form-control" id="coverImageUrl" th:field="*{coverImageUrl}">
+                  <div class="form-text">Cole a URL de uma imagem da web para a capa do board.</div>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="private" name="private" th:checked="*{isPrivate}">
+                  <label class="form-check-label" for="private">Board privado</label>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <a th:href="@{/boards/{id}(id=${board.id})}" class="btn btn-outline-secondary">Cancelar</a>
+                  <div>
+                    <a th:href="@{/boards/{id}/delete(id=${board.id})}" 
+                       class="btn btn-outline-danger me-2"
+                       onclick="return confirm('Tem certeza que deseja excluir este board? Esta ação não pode ser desfeita.')">
+                      Excluir
+                    </a>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
                   </div>
-                  <div class="mb-3">
-                    <label for="description" class="form-label">Descrição</label>
-                    <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
-                  </div>
-                  <div class="mb-3">
-                    <label for="coverImageUrl" class="form-label">URL da Imagem de Capa</label>
-                    <input type="url" class="form-control" id="coverImageUrl" th:field="*{coverImageUrl}">
-                    <div class="form-text">Cole a URL de uma imagem da web para a capa do board.</div>
-                  </div>
-                  <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="private" name="private" th:checked="*{isPrivate}">
-                    <label class="form-check-label" for="private">Board privado</label>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <a th:href="@{/boards/{id}(id=${board.id})}" class="btn btn-outline-secondary">Cancelar</a>
-                    <div>
-                      <a th:href="@{/boards/{id}/delete(id=${board.id})}" 
-                         class="btn btn-outline-danger me-2"
-                         onclick="return confirm('Tem certeza que deseja excluir este board? Esta ação não pode ser desfeita.')">
-                        Excluir
-                      </a>
-                      <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="card">
-              <div class="card-header bg-white">
-                <h3 class="card-title h5 mb-0">Prévia</h3>
-              </div>
-              <div class="card-body">
-                <div class="board-preview">
-                  <div class="card board-card">
-                    <img id="preview-cover" th:src="${board.coverImageUrl != null ? board.coverImageUrl : 'https://via.placeholder.com/400x200?text=Imagem+de+Capa'}"
-                      class="card-img-top" alt="Prévia">
-                    <div class="card-body">
-                      <h5 class="card-title" id="preview-name" th:text="${board.name}">Nome do Board</h5>
-                      <p class="card-text" id="preview-description" th:text="${board.description}">Descrição do board...</p>
-                      <span id="preview-private" class="badge bg-secondary" th:classappend="${board.isPrivate ? '' : 'd-none'}">Privado</span>
-                    </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-header bg-white">
+              <h3 class="card-title h5 mb-0">Prévia</h3>
+            </div>
+            <div class="card-body">
+              <div class="board-preview">
+                <div class="card board-card">
+                  <img id="preview-cover" th:src="${board.coverImageUrl != null ? board.coverImageUrl : 'https://via.placeholder.com/400x200?text=Imagem+de+Capa'}"
+                    class="card-img-top" alt="Prévia">
+                  <div class="card-body">
+                    <h5 class="card-title" id="preview-name" th:text="${board.name}">Nome do Board</h5>
+                    <p class="card-text" id="preview-description" th:text="${board.description}">Descrição do board...</p>
+                    <span id="preview-private" class="badge bg-secondary" th:classappend="${board.isPrivate ? '' : 'd-none'}">Privado</span>
                   </div>
                 </div>
               </div>
@@ -82,40 +80,40 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Script para atualizar a prévia -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const nameInput = document.getElementById('name');
-          const descInput = document.getElementById('description');
-          const coverInput = document.getElementById('coverImageUrl');
-          const privateInput = document.getElementById('private');
+    <!-- Script para atualizar a prévia -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const nameInput = document.getElementById('name');
+        const descInput = document.getElementById('description');
+        const coverInput = document.getElementById('coverImageUrl');
+        const privateInput = document.getElementById('private');
 
-          const previewName = document.getElementById('preview-name');
-          const previewDesc = document.getElementById('preview-description');
-          const previewCover = document.getElementById('preview-cover');
-          const previewPrivate = document.getElementById('preview-private');
+        const previewName = document.getElementById('preview-name');
+        const previewDesc = document.getElementById('preview-description');
+        const previewCover = document.getElementById('preview-cover');
+        const previewPrivate = document.getElementById('preview-private');
 
-          // Atualiza a prévia do Board para edição
-          function updatePreview() {
-            previewName.textContent = nameInput.value || 'Nome do Board';
-            previewDesc.textContent = descInput.value || 'Descrição do board...';
+        // Atualiza a prévia do Board para edição
+        function updatePreview() {
+          previewName.textContent = nameInput.value || 'Nome do Board';
+          previewDesc.textContent = descInput.value || 'Descrição do board...';
 
-            if (coverInput.value) previewCover.src = coverInput.value;
+          if (coverInput.value) previewCover.src = coverInput.value;
 
-            if (privateInput.checked) previewPrivate.classList.remove('d-none');
-            else previewPrivate.classList.add('d-none');
-          }
+          if (privateInput.checked) previewPrivate.classList.remove('d-none');
+          else previewPrivate.classList.add('d-none');
+        }
 
-          // Adiciona event listeners
-          nameInput.addEventListener('input', updatePreview);
-          descInput.addEventListener('input', updatePreview);
-          coverInput.addEventListener('input', updatePreview);
-          privateInput.addEventListener('change', updatePreview);
-        });
-      </script>
-    </section>
-  </div>
+        // Adiciona event listeners
+        nameInput.addEventListener('input', updatePreview);
+        descInput.addEventListener('input', updatePreview);
+        coverInput.addEventListener('input', updatePreview);
+        privateInput.addEventListener('change', updatePreview);
+      });
+    </script>
+  </section>
 </body>
 
 </html>
