@@ -45,9 +45,15 @@
             <!-- Overlay de ações do pin que aparece no hover -->
             <div class="pin-actions">
               <!-- Botão salvar -->
-              <button class="btn btn-danger btn-sm rounded-pill save-btn">
+              <button th:if="${session.currentUser != null}" class="btn btn-sm rounded-pill save-btn"
+                   th:classappend="${savedPinsMap != null && savedPinsMap.containsKey(pin.id) && savedPinsMap.get(pin.id)} ? 'btn-success' : 'btn-danger'" 
+                   th:text="${savedPinsMap != null && savedPinsMap.containsKey(pin.id) && savedPinsMap.get(pin.id)} ? 'Salvo' : 'Salvar'"
+                   th:attr="data-pin-id=${pin.id}">
                 Salvar
               </button>
+              <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}" class="btn btn-sm rounded-pill btn-danger">
+                Salvar
+              </a>
 
               <!-- Botões de ação secundários -->
               <div class="action-icons">
@@ -232,6 +238,61 @@
         color: #6c757d;
       }
     </style>
+
+    <!-- Script para os botões de salvar -->
+    <script th:inline="javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        // Captura todos os botões de salvar
+        const saveButtons = document.querySelectorAll('.save-btn');
+        
+        // Verifica se o usuário está logado usando Thymeleaf
+        const isLoggedIn = [[${session.currentUser != null}]];
+        
+        saveButtons.forEach(button => {
+          button.addEventListener('click', function (e) {
+            e.stopPropagation(); // Evita propagação do clique
+            e.preventDefault(); // Previne comportamento padrão do link
+            
+            const pinId = this.getAttribute('data-pin-id');
+            
+            // Redireciona para login se não estiver logado
+            if (!isLoggedIn) {
+              window.location.href = '/auth/login';
+              return;
+            }
+
+            // Faz a requisição AJAX para salvar o pin
+            fetch(`/pins/${pinId}/save`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(response => {
+              if (response.ok) {
+                // Altera o estilo do botão para indicar que foi salvo
+                this.classList.toggle('btn-danger');
+                this.classList.toggle('btn-success');
+                
+                if (this.classList.contains('btn-success')) {
+                  this.textContent = 'Salvo';
+                } else {
+                  this.textContent = 'Salvar';
+                }
+                
+                return response.text();
+              } else {
+                throw new Error('Erro ao salvar o pin');
+              }
+            })
+            .catch(error => {
+              console.error('Erro:', error);
+              alert('Ocorreu um erro ao salvar o pin. Por favor, tente novamente.');
+            });
+          });
+        });
+      });
+    </script>
   </section>
 </body>
 

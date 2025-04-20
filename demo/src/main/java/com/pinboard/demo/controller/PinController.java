@@ -50,8 +50,50 @@ public class PinController {
   // Obtém a instância do Singleton para configurações
   private final ConfigurationManager configManager = ConfigurationManager.getInstance();
 
+  // Método para download da imagem
+  @GetMapping("/{id}/download")
+  @ResponseBody
+  public ResponseEntity<Object> downloadImage(@PathVariable Long id, HttpSession session) {
+    Pin pin = pinService.getPin(id);
+    if (pin == null) return ResponseEntity.notFound().build();
+    
+    String imageUrl = pin.getImageUrl();
+    
+    try {
+      // Cria uma URL a partir da string usando URI
+      java.net.URI uri = new java.net.URI(imageUrl);
+      java.net.URL url = uri.toURL();
+      
+      // Abre conexão com a URL
+      java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
+      connection.setRequestMethod("GET");
+      
+      // Obtém o nome do arquivo da URL
+      String fileName = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+      
+      // Se o nome do arquivo não tiver extensão, adicione .jpg
+      if (!fileName.contains(".")) fileName += ".jpg";
+      
+      // Lê os bytes da imagem
+      java.io.InputStream inputStream = connection.getInputStream();
+      byte[] imageBytes = inputStream.readAllBytes();
+      inputStream.close();
+      
+      // Configura os headers para download
+      org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+      headers.setContentDispositionFormData("attachment", fileName);
+      headers.setContentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM);
+      
+      // Retorna a resposta com a imagem
+      return new ResponseEntity<>(imageBytes, headers, org.springframework.http.HttpStatus.OK);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
   @GetMapping
-  public String getAllPins(Model model, @RequestParam(required = false) String sort) {
+  public String getAllPins(Model model, @RequestParam(required = false) String sort, HttpSession session) {
     // Utiliza o padrão Strategy para ordenação dos pins
     SortingStrategy strategy = null;
 
@@ -62,6 +104,23 @@ public class PinController {
 
     List<Pin> pins = pinService.getAllPins();
 
+    // Adicionar informações de pins já salvos pelo usuário atual
+    Map<Long, Boolean> savedPinsMap = new HashMap<>();
+    User currentUser = (User) session.getAttribute("currentUser");
+    if (currentUser != null) {
+      // Recarrega o usuário para ter acesso às coleções lazy
+      currentUser = userService.refreshUser(currentUser.getId());
+      
+      // Monta um mapa de pins salvos para verificação rápida na view
+      for (Pin pin : pins) {
+        savedPinsMap.put(pin.getId(), userService.hasUserSavedPin(currentUser.getId(), pin.getId()));
+      }
+      
+      // Atualiza o usuário na sessão
+      session.setAttribute("currentUser", currentUser);
+    }
+    
+    model.addAttribute("savedPinsMap", savedPinsMap);
     model.addAttribute("pins", pins);
     model.addAttribute("appName", configManager.getAppName());
     model.addAttribute("version", configManager.getVersion());
@@ -208,8 +267,26 @@ public class PinController {
   }
 
   @GetMapping("/search")
-  public String searchPins(@RequestParam String keyword, Model model) {
+  public String searchPins(@RequestParam String keyword, Model model, HttpSession session) {
     List<Pin> pins = pinService.searchPins(keyword);
+    
+    // Adicionar informações de pins já salvos pelo usuário atual
+    Map<Long, Boolean> savedPinsMap = new HashMap<>();
+    User currentUser = (User) session.getAttribute("currentUser");
+    if (currentUser != null) {
+      // Recarrega o usuário para ter acesso às coleções lazy
+      currentUser = userService.refreshUser(currentUser.getId());
+      
+      // Monta um mapa de pins salvos para verificação rápida na view
+      for (Pin pin : pins) {
+        savedPinsMap.put(pin.getId(), userService.hasUserSavedPin(currentUser.getId(), pin.getId()));
+      }
+      
+      // Atualiza o usuário na sessão
+      session.setAttribute("currentUser", currentUser);
+    }
+    
+    model.addAttribute("savedPinsMap", savedPinsMap);
     model.addAttribute("pins", pins);
     model.addAttribute("keyword", keyword);
     model.addAttribute("appName", configManager.getAppName());
