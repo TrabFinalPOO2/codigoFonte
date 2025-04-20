@@ -19,6 +19,7 @@ import com.pinboard.demo.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Controller
 @RequestMapping("/profile")
@@ -294,8 +295,8 @@ public class ProfileController {
     // Recarrega o usuário para ter certeza de que é a versão mais recente
     currentUser = userService.refreshUser(currentUser.getId());
 
-    // Verifica se a senha atual está correta
-    if (!currentPassword.equals(currentUser.getPassword())) {
+    // Verifica se a senha atual está correta usando BCrypt
+    if (!BCrypt.checkpw(currentPassword, currentUser.getPassword())) {
       redirectAttributes.addFlashAttribute("error", "Senha atual incorreta");
       return "redirect:/profile/change-password";
     }
@@ -312,8 +313,9 @@ public class ProfileController {
       return "redirect:/profile/change-password";
     }
 
-    // Atualiza a senha
-    currentUser.setPassword(newPassword);
+    // Gera hash da nova senha e atualiza o usuário
+    String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(12));
+    currentUser.setPassword(hashedPassword);
     userService.saveUser(currentUser);
 
     // Força logout para que o usuário faça login novamente com a nova senha

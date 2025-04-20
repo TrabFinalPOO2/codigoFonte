@@ -16,6 +16,7 @@ import com.pinboard.demo.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Controller
 @RequestMapping("/auth")
@@ -49,7 +50,7 @@ public class AuthController {
 
     User user = userRepository.findUserByEmail(email);
 
-    if (user != null && password.equals(user.getPassword())) {
+    if (user != null && BCrypt.checkpw(password, user.getPassword())) {
       // Força o carregamento das coleções que podem ser usadas na interface
       user.getPins().size();
       user.getBoards().size();
@@ -83,7 +84,11 @@ public class AuthController {
       return "redirect:/auth/register";
     }
 
-    // Adaptação futura: implementar Hash de senha aqui
+    // Criptografa a senha antes de salvar no banco de dados
+    String plainPassword = user.getPassword();
+    String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
+    user.setPassword(hashedPassword);
+    
     userRepository.save(user);
 
     redirectAttributes.addFlashAttribute("success", "Cadastro realizado com sucesso! Faça login para continuar.");

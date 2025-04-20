@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.pinboard.demo.model.Board;
 import com.pinboard.demo.model.Pin;
@@ -58,14 +59,14 @@ public class DemoApplication {
       User user1 = new User();
       user1.setUsername("maria_silva");
       user1.setEmail("maria@example.com");
-      user1.setPassword("senha123");
+      user1.setPassword(BCrypt.hashpw("senha123", BCrypt.gensalt(12)));
       user1.setProfileImageUrl("https://randomuser.me/api/portraits/women/44.jpg");
       user1.setBio("Entusiasta de arte e design");
       
       User user2 = new User();
       user2.setUsername("joao_santos");
       user2.setEmail("joao@example.com");
-      user2.setPassword("senha123");
+      user2.setPassword(BCrypt.hashpw("senha123", BCrypt.gensalt(12)));
       user2.setProfileImageUrl("https://randomuser.me/api/portraits/men/22.jpg");
       user2.setBio("Fotógrafo amador e amante de viagens");
       
