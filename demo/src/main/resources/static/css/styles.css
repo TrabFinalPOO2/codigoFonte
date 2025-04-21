@@ -610,3 +610,117 @@ body {
     width: 100%;
   }
 }
+
+/* Estilos do rodapé personalizado */
+.footer-custom {
+  background-color: #ffffff;
+  border-top: 1px solid #eaeaea;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.footer-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(45deg, #e60023, #ff4d6d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.footer-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-heading:after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(45deg, #e60023, #ff4d6d);
+  bottom: 0;
+  left: 0;
+  border-radius: 2px;
+}
+
+.footer-links {
+  margin-bottom: 20px;
+}
+
+.footer-link {
+  display: block;
+  padding: 5px 0;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.footer-link:hover {
+  color: #e60023;
+  transform: translateX(5px);
+}
+
+.copyright-text {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.newsletter-input {
+  border-radius: 20px 0 0 20px;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+}
+
+.newsletter-input:focus {
+  box-shadow: none;
+  border-color: #e60023;
+}
+
+.newsletter-btn {
+  border-radius: 0 20px 20px 0;
+  padding: 0 15px;
+  background: linear-gradient(45deg, #e60023, #ff4d6d);
+  border: none;
+}
+
+.newsletter-btn:hover {
+  background: linear-gradient(45deg, #d50020, #ff3d5d);
+  transform: translateX(0);
+}
+
+.social-links {
+  display: flex;
+  gap: 10px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(45deg, #e60023, #ff4d6d);
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(230, 0, 35, 0.2);
+  text-decoration: none;
+}
+
+.social-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 10px rgba(230, 0, 35, 0.3);
+  color: #fff;
+}
+
+@media (max-width: 767.98px) {
+  .footer-heading {
+    margin-top: 20px;
+  }
+}

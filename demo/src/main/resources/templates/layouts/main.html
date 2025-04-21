@@ -100,15 +100,76 @@
     </div>
   </main>
 
-  <!-- Rodapé -->
-  <footer class="bg-light py-3 mt-5">
-    <div class="container text-center">
-      <p class="mb-0">
-        <span th:text="${appName}">Pinboard</span>
-        <span th:if="${version}" th:text="'v' + ${version}">v1.0.0</span>
-        &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span>
-        - <a th:href="@{/about}" class="text-decoration-none">Sobre</a>
-      </p>
+  <!-- Rodapé personalizado -->
+  <footer class="footer-custom mt-5">
+    <div class="container pt-4">
+      <div class="row pt-3">
+        <!-- Coluna 1: Logo e informações -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <div class="d-flex align-items-center mb-3">
+            <i class="fa fa-thumbtack brand-icon me-2"></i>
+            <span class="footer-brand" th:text="${appName}">Pinboard</span>
+          </div>
+          <p class="text-muted mb-3">Sua plataforma para descobrir e salvar ideias criativas que inspiram seu próximo projeto.</p>
+          <p class="copyright-text">
+            &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span> 
+            <span th:text="${appName}">Pinboard</span>
+            <span th:if="${version}" class="ms-1 text-muted small" th:text="'v' + ${version}">v1.0.0</span>
+          </p>
+        </div>
+        
+        <!-- Coluna 2: Links úteis -->
+        <div class="col-lg-5 mb-4 mb-lg-0">
+          <div class="row">
+            <div class="col-6">
+              <h5 class="footer-heading">Explore</h5>
+              <ul class="footer-links list-unstyled">
+                <li><a th:href="@{/}" class="footer-link"><i class="fa fa-home me-2"></i>Início</a></li>
+                <li><a th:href="@{/pins}" class="footer-link"><i class="fa fa-thumbtack me-2"></i>Pins</a></li>
+                <li><a th:href="@{/boards}" class="footer-link"><i class="fa fa-th-large me-2"></i>Boards</a></li>
+                <li><a th:href="@{/activities}" class="footer-link"><i class="fa fa-clock me-2"></i>Atividades</a></li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <h5 class="footer-heading">Sobre</h5>
+              <ul class="footer-links list-unstyled">
+                <li><a th:href="@{/about}" class="footer-link"><i class="fa fa-info-circle me-2"></i>Quem somos</a></li>
+                <li><a th:href="@{/legal/terms}" class="footer-link"><i class="fa fa-file-contract me-2"></i>Termos de uso</a></li>
+                <li><a th:href="@{/legal/privacy}" class="footer-link"><i class="fa fa-shield-alt me-2"></i>Privacidade</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Coluna 3: Acesso (Login/Cadastro) -->
+        <div class="col-lg-3" th:unless="${session.currentUser != null}">
+          <h5 class="footer-heading">Acesso</h5>
+          <div class="d-grid gap-3">
+            <a th:href="@{/auth/login}" class="btn btn-outline-primary footer-auth-btn">
+              <i class="fa fa-sign-in-alt me-2"></i>Entrar
+            </a>
+            <a th:href="@{/auth/register}" class="btn btn-danger footer-auth-btn">
+              <i class="fa fa-user-plus me-2"></i>Criar conta
+            </a>
+            <p class="text-muted small mt-2">
+              Junte-se a milhares de criadores e encontre inspiração para seus projetos.
+            </p>
+          </div>
+        </div>
+
+        <!-- Coluna 3 (alternativa para usuários logados) -->
+        <div class="col-lg-3" th:if="${session.currentUser != null}">
+          <h5 class="footer-heading">Minha conta</h5>
+          <ul class="footer-links list-unstyled">
+            <li><a th:href="@{/profile}" class="footer-link"><i class="fa fa-user me-2"></i>Perfil de <span th:text="${#strings.abbreviate(session.currentUser.username, 10)}">Usuário</span></a></li>
+            <li><a th:href="@{'/profile/' + ${session.currentUser.username} + '?tab=boards'}" class="footer-link"><i class="fa fa-th-large me-2"></i>Meus boards</a></li>
+            <li><a th:href="@{'/profile/' + ${session.currentUser.username} + '?tab=pins'}" class="footer-link"><i class="fa fa-thumbtack me-2"></i>Meus pins</a></li>
+            <li><a th:href="@{'/profile/' + ${session.currentUser.username} + '?tab=saved'}" class="footer-link"><i class="fa fa-bookmark me-2"></i>Pins salvos</a></li>
+            <li><a th:href="@{'/profile/' + ${session.currentUser.username} + '?tab=saved-boards'}" class="footer-link"><i class="fa fa-heart me-2"></i>Boards salvos</a></li>
+            <li><a th:href="@{/auth/logout}" class="footer-link text-danger"><i class="fa fa-sign-out-alt me-2"></i>Sair</a></li>
+          </ul>
+        </div>
+      </div>
     </div>
   </footer>
 
