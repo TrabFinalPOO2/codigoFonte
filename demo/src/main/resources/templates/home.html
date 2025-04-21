@@ -59,25 +59,24 @@
         </div>
         <div class="row g-4" th:if="${!#lists.isEmpty(featuredPins)}">
           <div class="col-sm-6 col-md-4 col-lg-3" th:each="pin : ${featuredPins}">
-            <div class="card pin-card h-100">
-              <div class="featured-badge">
-                <i class="fa fa-star"></i> Destaque
+            <a th:href="@{/pins/{id}(id=${pin.id})}" class="text-decoration-none">
+              <div class="card pin-card h-100">
+                <div class="featured-badge">
+                  <i class="fa fa-star"></i> Destaque
+                </div>
+                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
+                  src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                  <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                  </small>
+                </div>
               </div>
-              <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
-                src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
-              <div class="card-body">
-                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
-              </div>
-              <div class="card-footer d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                  <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                </small>
-                <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
-                  <i class="fa fa-eye"></i> Ver
-                </a>
-              </div>
-            </div>
+            </a>
           </div>
         </div>
         <div class="alert alert-info" th:if="${#lists.isEmpty(featuredPins)}">
@@ -104,27 +103,26 @@
 
         <div class="masonry-grid row g-4" th:if="${!#lists.isEmpty(allPins)}">
           <div class="col-sm-6 col-md-4 col-lg-3 masonry-item" th:each="pin : ${allPins}">
-            <div class="card pin-card h-100">
-              <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
-                src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
-              <div class="card-body">
-                <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
-                <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
-              </div>
-              <div class="card-footer d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                  <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
-                </small>
-                <div class="btn-group">
-                  <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
-                    <i class="fa fa-heart"></i>
-                  </a>
-                  <a th:href="@{/pins/{id}(id=${pin.id})}" class="btn btn-sm btn-outline-primary">
-                    <i class="fa fa-eye"></i>
-                  </a>
+            <a th:href="@{/pins/{id}(id=${pin.id})}" class="text-decoration-none">
+              <div class="card pin-card h-100">
+                <img th:src="${pin.imageUrl}" class="card-img-top" th:alt="${pin.title}"
+                  src="https://via.placeholder.com/300x200" alt="Imagem de placeholder">
+                <div class="card-body">
+                  <h5 class="card-title" th:text="${pin.title}">Título do Pin</h5>
+                  <p class="card-text text-truncate" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="fa fa-heart"></i> <span th:text="${pin.likes}">0</span> likes
+                  </small>
+                  <div class="btn-group">
+                    <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="btn btn-sm btn-outline-danger">
+                      <i class="fa fa-heart"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 

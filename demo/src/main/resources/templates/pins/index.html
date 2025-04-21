@@ -59,6 +59,12 @@
                   <img th:src="${pin.imageUrl}" class="pin-image" th:alt="${pin.title}"
                     src="https://via.placeholder.com/300x400" alt="Imagem do pin">
                 </div>
+                
+                <!-- Informações do pin -->
+                <div class="pin-info p-2">
+                  <h3 class="pin-title" th:text="${pin.title}">Título do Pin</h3>
+                  <p class="pin-description" th:text="${pin.description}">Descrição do pin...</p>
+                </div>
               </a>
 
               <!-- Overlay de ações do pin que aparece no hover -->
@@ -95,22 +101,16 @@
                 </div>
               </div>
 
-              <!-- Informações do pin -->
-              <div class="pin-info p-2">
-                <h3 class="pin-title" th:text="${pin.title}">Título do Pin</h3>
-                <p class="pin-description" th:text="${pin.description}">Descrição do pin...</p>
-
-                <!-- Informações do autor -->
-                <div class="pin-author">
-                  <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
-                       th:src="${pin.creator.profileImageUrl}" 
-                       class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar">
-                  <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
-                       th:src="@{/img/default-avatar.png}" 
-                       class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar padrão">
-                  <span class="author-name"
-                    th:text="${pin.creator != null ? pin.creator.username : 'Anônimo'}">Usuário</span>
-                </div>
+              <!-- Informações do autor -->
+              <div class="pin-author p-2">
+                <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                     th:src="${pin.creator.profileImageUrl}" 
+                     class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar">
+                <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                     th:src="@{/img/default-avatar.png}" 
+                     class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar padrão">
+                <span class="author-name"
+                  th:text="${pin.creator != null ? pin.creator.username : 'Anônimo'}">Usuário</span>
 
                 <!-- Contador de likes -->
                 <div class="pin-stats">
@@ -179,6 +179,13 @@
       .pin-card:hover {
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       }
+      
+      .pin-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        cursor: pointer;
+      }
 
       .pin-image-container {
         position: relative;
@@ -196,6 +203,14 @@
       .pin-link:hover .pin-image {
         transform: scale(1.02);
       }
+      
+      .pin-info {
+        transition: background-color 0.2s;
+      }
+      
+      .pin-link:hover .pin-info {
+        background-color: #f8f9fa;
+      }
 
       .pin-actions {
         position: absolute;
@@ -207,6 +222,7 @@
         align-items: center;
         opacity: 0;
         transition: opacity 0.2s ease;
+        z-index: 10;
       }
 
       .pin-card:hover .pin-actions {
@@ -231,6 +247,7 @@
         right: 0;
         margin: 8px;
         gap: 4px;
+        z-index: 10;
       }
 
       .action-icon {
@@ -276,6 +293,8 @@
         align-items: center;
         gap: 6px;
         margin-top: 8px;
+        z-index: 5;
+        position: relative;
       }
 
       .author-avatar {

@@ -83,7 +83,7 @@ function adjustMasonryLayout() {
     let columnHeights = new Array(columnCount).fill(0);
 
     // Posiciona cada item
-    items.forEach((item, index) => {
+    items.forEach((item) => {
       // Encontra a coluna mais curta
       const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
 

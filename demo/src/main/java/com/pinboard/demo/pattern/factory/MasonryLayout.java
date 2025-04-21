@@ -30,6 +30,8 @@ public class MasonryLayout implements PinLayout {
 
     for (Pin pin : pins) {
       html.append("<div class='masonry-item' style='width: 23%; margin: 1%; float: left;'>");
+      // Envolvendo todo o card com um link
+      html.append("<a href='/pins/" + pin.getId() + "' style='text-decoration: none; color: inherit;'>");
       html.append("<div class='card pin-card h-100'>");
 
       // Badge de destaque, se aplicável
@@ -48,18 +50,17 @@ public class MasonryLayout implements PinLayout {
       html.append("<div class='card-footer d-flex justify-content-between align-items-center'>");
       html.append("<small class='text-muted'><i class='fa fa-heart'></i> " + pin.getLikes() + " likes</small>");
 
-      // Botões de ação
+      // Botões de ação - removido o botão "Ver"
       html.append("<div class='btn-group'>");
       html.append("<a href='/pins/" + pin.getId()
-          + "/like' class='btn btn-sm btn-outline-danger'><i class='fa fa-heart'></i></a>");
-      html.append(
-          "<a href='/pins/" + pin.getId() + "' class='btn btn-sm btn-outline-primary'><i class='fa fa-eye'></i></a>");
+          + "/like' class='btn btn-sm btn-outline-danger' onclick='event.stopPropagation();'><i class='fa fa-heart'></i></a>");
       html.append("<a href='/boards/" + boardId + "/remove-pin/" + pin.getId()
-          + "' class='btn btn-sm btn-outline-secondary'><i class='fa fa-times'></i></a>");
+          + "' class='btn btn-sm btn-outline-secondary' onclick='event.stopPropagation();'><i class='fa fa-times'></i></a>");
       html.append("</div>");
 
       html.append("</div>");
       html.append("</div>");
+      html.append("</a>");
       html.append("</div>");
     }
 

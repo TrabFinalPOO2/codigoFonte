@@ -29,7 +29,8 @@ public class ListLayout implements PinLayout {
     html.append("<div class='list-group'>");
 
     for (Pin pin : pins) {
-      html.append("<div class='list-group-item list-group-item-action'>");
+      // Transformando todo o item em um link
+      html.append("<a href='/pins/" + pin.getId() + "' style='text-decoration: none; color: inherit;' class='list-group-item list-group-item-action'>");
       html.append("<div class='d-flex w-100'>");
 
       // Imagem thumbnail
@@ -53,19 +54,17 @@ public class ListLayout implements PinLayout {
       // Descrição
       html.append("<p class='mb-1'>" + pin.getDescription() + "</p>");
 
-      // Botões de ação
+      // Botões de ação - removido o botão "Ver"
       html.append("<div class='btn-group mt-2'>");
       html.append("<a href='/pins/" + pin.getId()
-          + "/like' class='btn btn-sm btn-outline-danger'><i class='fa fa-heart'></i></a>");
-      html.append(
-          "<a href='/pins/" + pin.getId() + "' class='btn btn-sm btn-outline-primary'><i class='fa fa-eye'></i></a>");
+          + "/like' class='btn btn-sm btn-outline-danger' onclick='event.stopPropagation();'><i class='fa fa-heart'></i></a>");
       html.append("<a href='/boards/" + boardId + "/remove-pin/" + pin.getId()
-          + "' class='btn btn-sm btn-outline-secondary'><i class='fa fa-times'></i></a>");
+          + "' class='btn btn-sm btn-outline-secondary' onclick='event.stopPropagation();'><i class='fa fa-times'></i></a>");
       html.append("</div>");
 
       html.append("</div>");
       html.append("</div>");
-      html.append("</div>");
+      html.append("</a>");
     }
 
     html.append("</div>");
