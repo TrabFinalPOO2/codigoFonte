@@ -29,63 +29,77 @@
     </div>
 
     <!-- Resultados da busca -->
-    <div class="container pins-container mb-4">
-      <div class="pins-masonry" th:if="${pins.size() > 0}">
-        <!-- Cards de pins -->
-        <div class="pin-wrapper" th:each="pin : ${pins}" th:style="'animation-delay: ' + ${pinStat.index * 0.05} + 's'">
-          <div class="pin-card shadow-sm">
-            <!-- Link para a página detalhada do pin -->
-            <a th:href="@{/pins/{id}(id=${pin.id})}" class="pin-image-container">
-              <div class="pin-image">
-                <img th:src="${pin.imageUrl}" th:alt="${pin.title}" src="https://via.placeholder.com/300x400"
-                  alt="Imagem do pin">
+    <div class="container">
+      <!-- Masonry grid de pins inspirado no Pinterest -->
+      <div class="pins-container" th:if="${pins.size() > 0}">
+        <div class="pins-masonry">
+          <div class="pin-wrapper" th:each="pin, pinStat : ${pins}"
+            th:style="'animation-delay: ' + ${pinStat.index * 0.05} + 's'">
+            <div class="pin-card position-relative">
+              <!-- Badge de destaque -->
+              <div th:if="${pin.featured}" class="featured-badge">
+                <i class="fa fa-star me-1"></i> Destaque
               </div>
-            </a>
 
-            <!-- Overlay de ações do pin que aparece no hover -->
-            <div class="pin-actions">
-              <!-- Botão salvar -->
-              <button th:if="${session.currentUser != null}" class="btn btn-sm rounded-pill save-btn"
+              <!-- Link para a página do pin -->
+              <a th:href="@{/pins/{id}(id=${pin.id})}" class="pin-link">
+                <!-- Imagem do pin com proporção variável -->
+                <div class="pin-image-container">
+                  <img th:src="${pin.imageUrl}" class="pin-image" th:alt="${pin.title}"
+                    src="https://via.placeholder.com/300x400" alt="Imagem do pin">
+                </div>
+                
+                <!-- Informações do pin -->
+                <div class="pin-info p-2">
+                  <h3 class="pin-title" th:text="${pin.title}">Título do Pin</h3>
+                  <p class="pin-description" th:text="${#strings.abbreviate(pin.description, 100)}">Descrição do pin...</p>
+                </div>
+              </a>
+
+              <!-- Overlay de ações do pin que aparece no hover -->
+              <div class="pin-actions">
+                <!-- Botão salvar -->
+                <button th:if="${session.currentUser != null}" class="btn btn-sm rounded-pill save-btn"
                    th:classappend="${savedPinsMap != null && savedPinsMap.containsKey(pin.id) && savedPinsMap.get(pin.id)} ? 'btn-success' : 'btn-danger'" 
                    th:text="${savedPinsMap != null && savedPinsMap.containsKey(pin.id) && savedPinsMap.get(pin.id)} ? 'Salvo' : 'Salvar'"
                    th:attr="data-pin-id=${pin.id}">
-                Salvar
-              </button>
-              <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}" class="btn btn-sm rounded-pill btn-danger">
-                Salvar
-              </a>
-
-              <!-- Botões de ação secundários -->
-              <div class="action-icons">
-                <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="action-icon" title="Curtir">
-                  <i class="fa fa-heart"></i>
+                  Salvar
+                </button>
+                <a th:unless="${session.currentUser != null}" th:href="@{/auth/login}" class="btn btn-sm rounded-pill btn-danger">
+                  Salvar
                 </a>
-                <div class="action-icon dropdown">
-                  <a href="#" role="button" id="boardDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-ellipsis-h"></i>
+
+                <!-- Botões de ação secundários -->
+                <div class="action-icons">
+                  <a th:href="@{/pins/{id}/like(id=${pin.id})}" class="action-icon" title="Curtir">
+                    <i class="fa fa-heart"></i>
                   </a>
-                  <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="boardDropdown">
-                    <li><a class="dropdown-item" th:href="@{/pins/{id}/edit(id=${pin.id})}">Editar</a></li>
-                    <li><a class="dropdown-item" th:href="@{/pins/{id}/delete(id=${pin.id})}"
-                        onclick="return confirm('Tem certeza que deseja excluir este pin?')">Excluir</a></li>
-                  </ul>
+                  <div class="action-icon dropdown">
+                    <a href="#" role="button" id="boardDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="boardDropdown">
+                      <li><a class="dropdown-item" href="#"><i class="fa fa-thumbtack me-2 text-muted"></i>Ocultar</a>
+                      </li>
+                      <li><a class="dropdown-item" th:href="@{/pins/{id}/download(id=${pin.id})}"><i class="fa fa-download me-2 text-muted"></i>Baixar
+                          imagem</a></li>
+                      <li><a class="dropdown-item" href="#"><i class="fa fa-flag me-2 text-muted"></i>Denunciar</a>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Informações do pin -->
-            <div class="pin-details p-3">
-              <h3 class="pin-title h6" th:text="${pin.title}">Título do Pin</h3>
-              <p class="pin-description small text-muted mb-2" th:text="${#strings.abbreviate(pin.description, 100)}">
-                Descrição do pin será exibida aqui...
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <!-- Autor do pin -->
-                <div class="pin-author small">
-                  <i class="fa fa-user-circle"></i>
-                  <span class="author-name"
-                    th:text="${pin.creator != null ? pin.creator.username : 'Anônimo'}">Usuário</span>
-                </div>
+              <!-- Informações do autor -->
+              <div class="pin-author p-2">
+                <img th:if="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                     th:src="${pin.creator.profileImageUrl}" 
+                     class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar">
+                <img th:unless="${pin.creator != null && pin.creator.profileImageUrl != null && !pin.creator.profileImageUrl.isEmpty()}" 
+                     th:src="@{/img/default-avatar.png}" 
+                     class="author-avatar rounded-circle" style="width: 30px; height: 30px; object-fit: cover;" alt="Avatar padrão">
+                <span class="author-name"
+                  th:text="${pin.creator != null ? pin.creator.username : 'Anônimo'}">Usuário</span>
 
                 <!-- Contador de likes -->
                 <div class="pin-stats">
@@ -146,40 +160,58 @@
         border-radius: 16px;
         overflow: hidden;
         background-color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s;
         break-inside: avoid;
       }
 
-      .pin-image-container {
+      .pin-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+      }
+      
+      .pin-link {
+        text-decoration: none;
+        color: inherit;
         display: block;
-        position: relative;
-        overflow: hidden;
+        cursor: pointer;
       }
 
-      .pin-image img {
+      .pin-image-container {
+        position: relative;
+        overflow: hidden;
+        background-color: #f5f5f5;
+      }
+
+      .pin-image {
         width: 100%;
         display: block;
         object-fit: cover;
         transition: transform 0.3s ease;
       }
 
-      .pin-card:hover .pin-image img {
+      .pin-link:hover .pin-image {
         transform: scale(1.02);
+      }
+      
+      .pin-info {
+        transition: background-color 0.2s;
+      }
+      
+      .pin-link:hover .pin-info {
+        background-color: #f8f9fa;
       }
 
       .pin-actions {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.05);
+        top: 8px;
+        left: 8px;
+        right: 8px;
         display: flex;
-        padding: 12px;
+        justify-content: space-between;
+        align-items: center;
         opacity: 0;
         transition: opacity 0.2s ease;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-end;
+        z-index: 10;
       }
 
       .pin-card:hover .pin-actions {
@@ -187,55 +219,110 @@
       }
 
       .save-btn {
-        align-self: flex-end;
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       .action-icons {
         display: flex;
-        gap: 8px;
-        margin-top: auto;
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin: 8px;
+        gap: 4px;
+        z-index: 10;
       }
 
       .action-icon {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: white;
+        background-color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #555;
+        color: #333;
         text-decoration: none;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         transition: all 0.2s;
       }
 
       .action-icon:hover {
-        background: #f8f9fa;
-        transform: scale(1.05);
-        color: #dc3545;
+        transform: scale(1.1);
+        background-color: #f8f8f8;
+        color: #e60023;
       }
 
       .pin-title {
-        margin-bottom: 6px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 8px 0 4px;
+        color: #333;
       }
 
       .pin-description {
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 12px;
+        color: #666;
+        margin-bottom: 8px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      /* Estados vazios */
-      .empty-state {
-        color: #6c757d;
+      .pin-author {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        z-index: 5;
+        position: relative;
+      }
+
+      .author-avatar {
+        width: 24px;
+        height: 24px;
+        object-fit: cover;
+      }
+
+      .author-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .pin-stats {
+        margin-left: auto;
+        font-size: 12px;
+        color: #888;
+      }
+
+      .featured-badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background-color: #ffcc00;
+        color: #333;
+        padding: 4px 8px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Responsividade */
+      @media (max-width: 576px) {
+        .pins-masonry {
+          columns: 2 150px;
+        }
       }
     </style>
 
