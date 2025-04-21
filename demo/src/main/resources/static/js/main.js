@@ -27,6 +27,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Comportamento minimalista para a barra de pesquisa
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        const searchInput = searchForm.querySelector('.search-input');
+        const searchButton = searchForm.querySelector('.search-button');
+        
+        // Pequeno efeito de foco
+        searchInput.addEventListener('focus', function() {
+            searchButton.style.color = '#e60023';
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            if (this.value.trim() === '') {
+                searchButton.style.color = '#888';
+            }
+        });
+    }
+    
+    // Efeitos para a navbar
+    const navbar = document.querySelector('.custom-navbar');
+    
+    // Detecta a página atual para destacar o item de menu correto
+    if (navbar) {
+        const navLinks = navbar.querySelectorAll('.nav-link-custom');
+        const currentPath = window.location.pathname;
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPath || 
+                (href !== '/' && currentPath.startsWith(href))) {
+                link.classList.add('active');
+                link.style.color = '#e60023';
+            }
+        });
+        
+        // Adiciona efeito de rolagem
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    }
 });
 
 // Função para ajustar o layout masonry

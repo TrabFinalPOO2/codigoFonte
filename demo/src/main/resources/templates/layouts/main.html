@@ -25,62 +25,66 @@
 
 <body>
   <!-- Barra de navegação -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <nav class="navbar navbar-expand-lg sticky-top custom-navbar">
     <div class="container">
       <a class="navbar-brand" th:href="@{/}">
-        <i class="fa fa-thumbtack"></i> <span th:text="${appName}">Pinboard</span>
+        <i class="fa fa-thumbtack brand-icon"></i> <span th:text="${appName}" class="brand-text">Pinboard</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav mx-auto">
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/}"><i class="fa fa-home"></i> Início</a>
+            <a class="nav-link nav-link-custom" th:href="@{/}"><i class="fa fa-home nav-icon"></i> <span class="nav-text">Início</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/pins}"><i class="fa fa-thumbtack"></i> Pins</a>
+            <a class="nav-link nav-link-custom" th:href="@{/pins}"><i class="fa fa-thumbtack nav-icon"></i> <span class="nav-text">Pins</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/boards}"><i class="fa fa-th-large"></i> Boards</a>
+            <a class="nav-link nav-link-custom" th:href="@{/boards}"><i class="fa fa-th-large nav-icon"></i> <span class="nav-text">Boards</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/activities}"><i class="fa fa-clock"></i> Atividades</a>
+            <a class="nav-link nav-link-custom" th:href="@{/activities}"><i class="fa fa-clock nav-icon"></i> <span class="nav-text">Atividades</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/about}"><i class="fa fa-info-circle"></i> Sobre</a>
+            <a class="nav-link nav-link-custom" th:href="@{/about}"><i class="fa fa-info-circle nav-icon"></i> <span class="nav-text">Sobre</span></a>
           </li>
         </ul>
-        <form class="d-flex" th:action="@{/pins/search}" method="get">
-          <input class="form-control me-2" type="search" placeholder="Buscar..." name="keyword">
-          <button class="btn btn-outline-danger" type="submit"><i class="fa fa-search"></i></button>
+        <form class="d-flex search-form" th:action="@{/pins/search}" method="get">
+          <input class="form-control search-input" type="search" placeholder="Buscar" name="keyword" aria-label="Buscar">
+          <button class="search-button" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
         </form>
         <ul class="navbar-nav ms-3">
           <li class="nav-item dropdown" th:if="${session.currentUser != null}">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            <a class="nav-link dropdown-toggle user-dropdown" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
               aria-expanded="false">
-              <img th:if="${session.currentUser.profileImageUrl != null && !session.currentUser.profileImageUrl.isEmpty()}" th:src="${session.currentUser.profileImageUrl}" 
-                class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" alt="Avatar">
-              <img th:unless="${session.currentUser.profileImageUrl != null && !session.currentUser.profileImageUrl.isEmpty()}" th:src="@{/img/default-avatar.png}" 
-                class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;" alt="Avatar padrão">
-              <span th:text="${#strings.abbreviate(session.currentUser.username, 15)}">Usuário</span>
+              <div class="user-avatar-container">
+                <img th:if="${session.currentUser.profileImageUrl != null && !session.currentUser.profileImageUrl.isEmpty()}" 
+                     th:src="${session.currentUser.profileImageUrl}" 
+                     class="user-avatar" alt="Avatar">
+                <img th:unless="${session.currentUser.profileImageUrl != null && !session.currentUser.profileImageUrl.isEmpty()}" 
+                     th:src="@{/img/default-avatar.png}" 
+                     class="user-avatar" alt="Avatar padrão">
+              </div>
+              <span th:text="${#strings.abbreviate(session.currentUser.username, 15)}" class="user-name">Usuário</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li><a class="dropdown-item" th:href="@{/profile}"><i class="fa fa-user"></i> Perfil</a></li>
-              <li><a class="dropdown-item" href="#"><i class="fa fa-cog"></i> Configurações</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" th:href="@{/auth/logout}"><i class="fa fa-sign-out-alt"></i> Sair</a></li>
+            <ul class="dropdown-menu dropdown-menu-end custom-dropdown" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item dropdown-item-custom" th:href="@{/profile}"><i class="fa fa-user dropdown-icon"></i> Perfil</a></li>
+              <li><a class="dropdown-item dropdown-item-custom" href="#"><i class="fa fa-cog dropdown-icon"></i> Configurações</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item dropdown-item-custom" th:href="@{/auth/logout}"><i class="fa fa-sign-out-alt dropdown-icon"></i> Sair</a></li>
             </ul>
           </li>
           <li class="nav-item" th:unless="${session.currentUser != null}">
-            <a class="btn btn-outline-primary me-2" th:href="@{/auth/login}">
+            <a class="btn btn-outline-primary auth-btn login-btn me-2" th:href="@{/auth/login}">
               <i class="fa fa-sign-in-alt"></i> Login
             </a>
           </li>
           <li class="nav-item" th:unless="${session.currentUser != null}">
-            <a class="btn btn-primary" th:href="@{/auth/register}">
+            <a class="btn btn-primary auth-btn register-btn" th:href="@{/auth/register}">
               <i class="fa fa-user-plus"></i> Cadastrar
             </a>
           </li>
