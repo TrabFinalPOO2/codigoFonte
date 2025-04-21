@@ -8,18 +8,46 @@
 
 <body>
   <section>
-    <div class="jumbotron bg-light p-5 rounded-3 mb-4">
-      <div class="container">
-        <h1 class="display-4">Bem-vindo ao <span th:text="${appName}">Pinboard</span>!</h1>
-        <p class="lead">Descubra, colecione e organize suas ideias favoritas em boards.</p>
-        <hr class="my-4">
-        <p>Crie pins, crie boards, encontre inspiração, e compartilhe com amigos.</p>
-        <a class="btn btn-danger btn-lg" th:href="@{/pins/new}" role="button">
-          <i class="fa fa-plus-circle"></i> Criar Pin
-        </a>
-        <a class="btn btn-outline-danger btn-lg ms-2" th:href="@{/boards/new}" role="button">
-          <i class="fa fa-th-large"></i> Criar Board
-        </a>
+    <div class="minimal-hero">
+      <div class="container-fluid">
+        <div class="row g-0">
+          <div class="col-lg-6">
+            <div class="hero-content">
+              <h5 class="hero-pre-title">Sua plataforma de inspiração</h5>
+              <h1 class="hero-title" th:text="${appName}">Pinboard</h1>
+              <p class="hero-description">Descubra, salve e organize todas as suas ideias criativas em um só lugar.</p>
+              
+              <div class="hero-actions row">
+                <a class="col btn btn-primary btn-lg btn-accent" th:href="@{/pins/new}" role="button">
+                  <i class="fa fa-plus-circle"></i> Criar Pin
+                </a>
+                <a class="col btn btn-outline-dark btn-lg" th:href="@{/boards/new}" role="button">
+                  <i class="fa fa-th-large"></i> Criar Board
+                </a>
+                <a class="btn btn-outline-danger btn-lg" th:href="@{/pins}" role="button">
+                  <i class="fa fa-search"></i> Explorar
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-lg-6">
+            <div class="image-grid">
+              <div class="image-item img-thumbnail item-1">
+                <img src="https://img.freepik.com/fotos-premium/ilustracao-pintura-de-amante-no-prado-olhando-para-o-por-do-sol-gerar-ai_868783-7361.jpg?uid=R188290038&ga=GA1.1.537173446.1744682677&semt=ais_hybrid&w=740" alt="Anime">
+              </div>
+              <div class="image-item img-thumbnail item-2">
+                <img src="https://img.freepik.com/fotos-premium/retrato-de-mulher-em-estilo-anime-ou-manga_691560-1162.jpg?uid=R188290038&ga=GA1.1.537173446.1744682677&semt=ais_hybrid&w=740" alt="Natureza">
+              </div>
+              <div class="image-item img-thumbnail item-3">
+                <img src="https://img.freepik.com/fotos-gratis/ilustracao-da-cidade-do-anime_23-2151779726.jpg?uid=R188290038&ga=GA1.1.537173446.1744682677&semt=ais_hybrid&w=740" alt="Design">
+              </div>
+              <div class="image-item img-thumbnail item-4">
+                <img src="https://img.freepik.com/fotos-gratis/vista-lateral-garota-de-anime-abracando-gato_23-2150970943.jpg?t=st=1745202697~exp=1745206297~hmac=e70fa2284f0044f8cc9d66654211ae13844f31516a1e154aeb0cf9164ece0b7e&w=1380" alt="Gatinho">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
