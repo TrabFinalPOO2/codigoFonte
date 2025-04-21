@@ -20,13 +20,9 @@ body {
 /* Navbar moderna e atrativa */
 .custom-navbar {
   background-color: white;
-  padding: 15px 0;
+  padding: 8px 0;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-}
-
-.custom-navbar.scrolled {
-  padding: 8px 0;
 }
 
 .navbar-brand {
