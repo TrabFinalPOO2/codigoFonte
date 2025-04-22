@@ -168,7 +168,7 @@
       <!-- Modal para visualização em tela cheia -->
       <div class="modal fade" id="fullscreenImageModal" tabindex="-1" aria-labelledby="fullscreenImageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen p-0">
-          <div class="modal-content bg-black border-0">
+          <div class="modal-content bg-translucent border-0" style="background-color: rgba(0, 0, 0, 0.85);">
             <div class="modal-body d-flex align-items-center justify-content-center p-0" style="overflow: hidden;">
               <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fechar" style="z-index: 1050;"></button>
               
@@ -181,7 +181,7 @@
               
               <!-- Container da imagem com limites máximos de dimensão -->
               <div class="image-container" style="max-width: 100%; max-height: 100vh; display: flex; justify-content: center; align-items: center;">
-                <img id="fullscreenImage" class="img-fluid" style="max-height: 95vh; max-width: 95vw; object-fit: contain; transform: scale(1); transition: transform 0.3s ease;" th:src="${pin.imageUrl}" th:alt="${pin.title}">
+                <img id="fullscreenImage" class="img-fluid rounded-2" style="max-height: 95vh; max-width: 95vw; object-fit: contain; transform: scale(1); transition: transform 0.3s ease;" th:src="${pin.imageUrl}" th:alt="${pin.title}">
               </div>
             </div>
           </div>
@@ -370,6 +370,7 @@
         const pinImage = document.getElementById('pinImage');
         const fullscreenImageModal = new bootstrap.Modal(document.getElementById('fullscreenImageModal'));
         const fullscreenImage = document.getElementById('fullscreenImage');
+        const modalContent = document.querySelector('.modal-content');
         
         // Abrir o modal ao clicar na imagem
         if (pinImage) {
@@ -377,6 +378,14 @@
             fullscreenImageModal.show();
           });
         }
+        
+        // Fechar o modal ao clicar fora da imagem
+        document.querySelector('.modal-body').addEventListener('click', function(e) {
+          // Verifica se o clique foi fora da imagem
+          if (e.target !== fullscreenImage && !fullscreenImage.contains(e.target)) {
+            fullscreenImageModal.hide();
+          }
+        });
         
         // Reset do zoom quando o modal é fechado
         document.getElementById('fullscreenImageModal').addEventListener('hidden.bs.modal', function () {
@@ -391,37 +400,87 @@
         let currentScale = 1;
         const maxZoom = 3;
         const minZoom = 0.5;
-
-        zoomInBtn.addEventListener('click', function () {
-          if (currentScale < maxZoom) {
-            currentScale += 0.25;
+        const zoomStep = 0.25;
+        
+        // Função para aplicar zoom
+        function applyZoom(newScale) {
+          if (newScale >= minZoom && newScale <= maxZoom) {
+            currentScale = newScale;
             fullscreenImage.style.transform = `scale(${currentScale})`;
           }
+        }
+
+        // Função para aumentar o zoom
+        function zoomIn() {
+          if (currentScale < maxZoom) applyZoom(currentScale + zoomStep);
+        }
+        
+        // Função para diminuir o zoom
+        function zoomOut() {
+          if (currentScale > minZoom) applyZoom(currentScale - zoomStep);
+        }
+        
+        // Função para resetar o zoom
+        function resetZoom() {
+          applyZoom(1);
+        }
+
+        // Impedir propagação de cliques nos botões de zoom
+        document.querySelector('.position-absolute.bottom-0').addEventListener('click', function(e) {
+          e.stopPropagation();
         });
 
-        zoomOutBtn.addEventListener('click', function () {
-          if (currentScale > minZoom) {
-            currentScale -= 0.25;
-            fullscreenImage.style.transform = `scale(${currentScale})`;
-          }
+        zoomInBtn.addEventListener('click', function (e) {
+          e.stopPropagation(); // Impedir que o clique feche o modal
+          zoomIn();
         });
 
-        resetZoomBtn.addEventListener('click', function () {
-          currentScale = 1;
-          fullscreenImage.style.transform = `scale(${currentScale})`;
+        zoomOutBtn.addEventListener('click', function (e) {
+          e.stopPropagation(); // Impedir que o clique feche o modal
+          zoomOut();
+        });
+
+        resetZoomBtn.addEventListener('click', function (e) {
+          e.stopPropagation(); // Impedir que o clique feche o modal
+          resetZoom();
         });
 
         // Adicionar suporte para zoom com a roda do mouse
         fullscreenImage.addEventListener('wheel', function(e) {
           e.preventDefault();
+          e.stopPropagation(); // Impedir que o scroll propague
           if (e.deltaY < 0 && currentScale < maxZoom) {
             // Scroll para cima - aumentar zoom
-            currentScale += 0.1;
+            applyZoom(currentScale + 0.1);
           } else if (e.deltaY > 0 && currentScale > minZoom) {
             // Scroll para baixo - diminuir zoom
-            currentScale -= 0.1;
+            applyZoom(currentScale - 0.1);
           }
-          fullscreenImage.style.transform = `scale(${currentScale})`;
+        });
+        
+        // Adicionar suporte para teclas + e - para zoom quando o modal estiver aberto
+        document.addEventListener('keydown', function(e) {
+          // Verifica se o modal está aberto
+          if (document.getElementById('fullscreenImageModal').classList.contains('show')) {
+            if (e.key === '+' || e.key === '=') {
+              // Tecla + para aumentar zoom
+              e.preventDefault();
+              zoomIn();
+            } else if (e.key === '-' || e.key === '_') {
+              // Tecla - para diminuir zoom
+              e.preventDefault();
+              zoomOut();
+            } else if (e.key === '0') {
+              // Tecla 0 para resetar zoom
+              e.preventDefault();
+              resetZoom();
+            }
+          }
+        });
+        
+        // Impedir que cliques na imagem fechem o modal
+        fullscreenImage.addEventListener('click', function(e) {
+          e.stopPropagation();
         });
 
         // Botão de favoritar
