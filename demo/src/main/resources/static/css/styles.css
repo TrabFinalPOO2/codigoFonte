@@ -426,7 +426,6 @@ body {
 .pin-card .card-img-top {
   width: 100%;
   object-fit: contain;
-  max-height: 60vh; /* Altura máxima para evitar imagens muito grandes */
   transition: all 0.5s ease;
 }
 
@@ -604,23 +603,7 @@ body {
   width: 100%;
   display: block;
   object-fit: contain;
-  max-height: 60vh; /* Altura máxima para evitar imagens muito grandes */
   transition: transform 0.3s ease;
-}
-
-/* Responsividade para visualização de imagens */
-@media (max-width: 767.98px) {
-  .pin-card .card-img-top,
-  .pin-image {
-    max-height: 50vh;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .pin-card .card-img-top,
-  .pin-image {
-    max-height: 40vh;
-  }
 }
 
 /* Responsividade */
